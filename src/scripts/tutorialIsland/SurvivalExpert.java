@@ -36,33 +36,21 @@ public class SurvivalExpert {
         script.sleep(Utils.boundedInteractionTime(1000, 1200));
         Utils.continueToEnd(script);
         if (!script.myPlayer().isInteracting(script.getNpcs().closest("Survival Expert"))) {
-            new ConditionalSleep(5000) {
-                @Override
-                public boolean condition() throws InterruptedException {
-                    return !script.myPlayer().isInteracting(script.getNpcs().closest("Survival Expert"));
-                }
-            }.sleep();
-        }
+            Timing.waitCondition(() -> !script.myPlayer().isInteracting(script.getNpcs().closest(
+                    "Survival Expert")), 500, 5000);
         script.sleep(Utils.randomInteractionTime(false));
 
         //Fishing
         NPC fishingSpots = script.getNpcs().closest("Fishing spot");
-        script.log("Found: " + fishingSpots);
-        script.log(fishingSpots.getActions());
 
         //Checking inventory
         do {
             script.log("Checking inventory");
-            script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.inventoryTab).interact();
-            script.sleep(Utils.boundedInteractionTime(800, 1200));
+            Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.inventoryTab)
+                    .interact(), 400, 2000);
+            script.sleep(Utils.randomInteractionTime(false));
             if (!script.getTabs().isOpen(Tab.INVENTORY)) {
-                new ConditionalSleep(5000) {
-                    @Override
-                    public boolean condition() throws InterruptedException {
-                        script.sleep(100);
-                        return script.getTabs().isOpen(Tab.INVENTORY);
-                    }
-                }.sleep();
+                Timing.waitCondition(() -> script.getTabs().isOpen(Tab.INVENTORY), 100, 5000);
             }
             script.log("Failed to open inventory, retrying...");
         } while(!script.getTabs().isOpen(Tab.INVENTORY));

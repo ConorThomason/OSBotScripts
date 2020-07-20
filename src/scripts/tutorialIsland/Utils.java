@@ -11,14 +11,14 @@ public class Utils {
     public static int randomInteractionTime(boolean chat) {
         Random rnd = new Random();
         if (chat)
-            return (int) Math.floor((rnd.nextGaussian()*800) + 1000);
+            return (int) Math.floor((rnd.nextGaussian()*25) + 215);
         else
-            return (int) Math.floor((rnd.nextGaussian()*800) + 300);
+            return (int) Math.floor((rnd.nextGaussian()*25) + 615);
     }
 
     public static int boundedInteractionTime(int low, int high){
         Random rnd = new Random();
-        return (int) Math.floor((rnd.nextGaussian()*(high-low)) + low);
+        return (int) Math.floor((rnd.nextGaussian()*100) + (high+low)/2);
     }
 
     public static void randomTypingIntervals(String typing, Script script) throws InterruptedException {

@@ -24,7 +24,7 @@ public class AccountGuide {
         Utils.interactWithNpc(script.getNpcs().closest("Account guide"), "Talk-to", script);
         script.sleep(Utils.randomInteractionTime(true));
         Utils.continueToEnd(script);
-        script.sleep(Utils.boundedInteractionTime(800, 1200));
+        script.sleep(Utils.randomInteractionTime(true));
         return true;
     }
 }
