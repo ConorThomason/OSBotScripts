@@ -86,26 +86,34 @@ public class GielinorGuide {
 //        }
 
         Timing.waitCondition(() -> configureInterface.interact(), 500, 4000);
+        Timing.waitCondition(() -> !script.getWidgets().containingActions(TUTCONSTS.advancedOptions,
+                "Side-stones arrangement").isEmpty(), 400, 8000);
         script.sleep(Utils.randomInteractionTime(false));
-        if (configureInterface.isVisible()) {
-            final RS2Widget advancedInterface = script.getWidgets()
-                    .containingActions(TUTCONSTS.advancedOptions, "Side-stones arrangement").get(0);
-            Timing.waitCondition(() -> advancedInterface.interact(), 500, 4000);
-            script.sleep(Utils.randomInteractionTime(false));
-            Timing.waitCondition(() -> script.getWidgets().containingActions(
-                    TUTCONSTS.advancedOptions, "Close").get(0).interact(), 500, 4000);
-            script.sleep(Utils.randomInteractionTime(false));
+        final RS2Widget advancedInterface = script.getWidgets()
+                .containingActions(TUTCONSTS.advancedOptions, "Side-stones arrangement").get(0);
+        Timing.waitCondition(() -> advancedInterface.interact(), 500, 4000);
+        script.sleep(Utils.randomInteractionTime(false));
+        Timing.waitCondition(() -> script.getWidgets().containingActions(
+                TUTCONSTS.advancedOptions, "Close").get(0).interact(), 500, 4000);
+        script.sleep(Utils.randomInteractionTime(false));
 //            advancedInterface.interact();
 //            script.sleep(Utils.boundedInteractionTime(800, 1200));
 //            advancedInterface = script.getWidgets().containingActions(TUTCONSTS.advancedOptions, "Close").get(0);
 //            advancedInterface.interact();
 //            script.sleep(Utils.randomInteractionTime(false));
-        } else
-            script.log("Error opening config");
 
         script.log("Attempting to talk to guide");
         Utils.interactWithNpc(script.getNpcs().closest(TUTCONSTS.gielinorGuideID), "Talk-to Gielinor Guide",
                 script);
+        Timing.waitCondition(() -> {
+            boolean result = false;
+            try {
+                result = Utils.pendingContinuation(script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }, 400, 6000);
         script.sleep(Utils.randomInteractionTime(false));
         while (!script.getWidgets().containingText("Click here to continue").isEmpty()) {
             script.getWidgets().getWidgetContainingText("Click here to continue").interact();

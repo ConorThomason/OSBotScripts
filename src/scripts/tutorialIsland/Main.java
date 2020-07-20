@@ -3,9 +3,9 @@ package scripts.tutorialIsland;
 import org.osbot.rs07.script.Script;
 import org.osbot.rs07.script.ScriptManifest;
 
-@ScriptManifest(author = "Hywok", name = "Tutorial Island 0.2", info = "Capable of start to finish " +
+@ScriptManifest(author = "Hywok", name = "Tutorial Island 0.3", info = "Capable of start to finish " +
         "Tut Island completion",
-        version = 0.2, logo = "")
+        version = 0.3, logo = "")
 public final class Main extends Script {
 
     @Override

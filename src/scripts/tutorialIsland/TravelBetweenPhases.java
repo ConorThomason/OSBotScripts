@@ -17,12 +17,8 @@ public class TravelBetweenPhases {
         script.sleep(Utils.randomInteractionTime(false));
         script.log("Attempting to walk to door");
         script.getWalking().webWalk(new Position(3103, 3096, 0));
-        new ConditionalSleep(10000, 12000) {
-            @Override
-            public boolean condition() throws InterruptedException {
-                return script.myPosition() == new Position(3103, 3096, 0);
-            }
-        }.sleep();
+        Timing.waitCondition(() -> script.myPosition().equals(new Position(3103, 3096, 0)),
+                500, 10000);
         script.log("Walked to Survival Expert");
         return true;
     }

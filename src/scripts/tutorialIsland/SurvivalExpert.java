@@ -128,14 +128,14 @@ public class SurvivalExpert {
         script.log("Attempting to reach firemaking area");
         script.sleep(Utils.randomInteractionTime(false));
         Position finalRandomTile = randomTile;
-        Timing.waitCondition(() -> script.myPlayer().getPosition().distance(finalRandomTile) == 0,
-                7500, 500);
+        Timing.waitCondition(() -> script.myPlayer().getPosition().equals(finalRandomTile),
+                250, 5000);
 
         //Opening inventory again
         do {
             script.log("Checking inventory");
             Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.inventoryTab)
-                    .interact(), 400, 2000);
+                    .interact(), 200, 2000);
             script.sleep(Utils.randomInteractionTime(false));
             if (!script.getTabs().isOpen(Tab.INVENTORY)) {
                 Timing.waitCondition(() -> script.getTabs().isOpen(Tab.INVENTORY), 100, 5000);
@@ -157,7 +157,7 @@ public class SurvivalExpert {
                 script.getWalking().walk(script.myPlayer().getPosition().translate(-1, -1));
             }
             return false;
-        }, 7500, 500);
+        }, 250, 5000);
 
         script.getInventory().getItem("Raw shrimps").interact("Use");
         script.sleep(Utils.randomInteractionTime(false));
