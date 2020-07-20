@@ -71,8 +71,8 @@ public class Utils {
             script.sleep(Utils.boundedInteractionTime(5000, 10000));
             try {
                 if (script.getWidgets().containingText("Nothing interesting happens.").get(0) != null) {
-                    script.getWidgets().containingText("Click to continue").get(0).interact();
-                    script.sleep(Utils.randomInteractionTime(false));
+                    Timing.waitCondition(() -> script.getWidgets().containingText("Click to continue").get(0).
+                            interact(), 200, 800);
                 }
             } catch (IndexOutOfBoundsException e){
                 //nop
@@ -87,8 +87,8 @@ public class Utils {
             try {
                 while (!script.getWidgets().containingText("Click here to continue").isEmpty()) {
                     script.log("Continuing..." + (++iterator));
-                    script.getWidgets().getWidgetContainingText("Click here to continue").interact();
-                    script.sleep(Utils.boundedInteractionTime(800, 1600));
+                    Timing.waitCondition(() -> script.getWidgets().getWidgetContainingText
+                            ("Click here to continue").interact(), 200, 1600);
                 }
             } catch (NullPointerException e) {
             }
@@ -98,8 +98,8 @@ public class Utils {
                         TUTCONSTS.playerHeadResponseChildPos2) != null ||
                 script.getWidgets().get(TUTCONSTS.playerHeadResponse, TUTCONSTS.playerHeadResponse) != null) {
                     script.log("Continuing..." + (++iterator));
-                    script.getWidgets().getWidgetContainingText("Click here to continue").interact();
-                    script.sleep(Utils.boundedInteractionTime(800, 1600));
+                    Timing.waitCondition(() -> script.getWidgets().getWidgetContainingText
+                            ("Click here to continue").interact(), 200, 1600);
                 }
             } catch (NullPointerException e) {
             }
@@ -107,8 +107,8 @@ public class Utils {
             try {
                 while (script.getWidgets().get(231, 3) != null) {
                     script.log("Continuing..." + (++iterator));
-                    script.getWidgets().getWidgetContainingText("Click here to continue").interact();
-                    script.sleep(Utils.boundedInteractionTime(800, 1600));
+                    Timing.waitCondition(() -> script.getWidgets().getWidgetContainingText
+                            ("Click here to continue").interact(), 200, 1600);
                 }
             } catch (NullPointerException e) {
             }

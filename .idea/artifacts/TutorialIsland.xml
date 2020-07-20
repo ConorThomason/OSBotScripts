@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TutorialIsland">
+    <output-path>$USER_HOME$/OSBot/Scripts</output-path>
+    <root id="archive" name="TutorialIsland.jar">
+      <element id="module-output" name="OSBot" />
+    </root>
+  </artifact>
+</component>
