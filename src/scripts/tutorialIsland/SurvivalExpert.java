@@ -26,20 +26,17 @@ public class SurvivalExpert {
         Utils.interactWithNpc(script.getNpcs().closest("Survival Expert"), "Talk-to"
                 , script);
         if (!script.myPlayer().isInteracting(script.getNpcs().closest("Survival Expert"))) {
-            new ConditionalSleep(5000) {
-                @Override
-                public boolean condition() throws InterruptedException {
-                    return script.myPlayer().isInteracting(script.getNpcs().closest("Survival Expert"));
-                }
-            }.sleep();
+            Timing.waitCondition(() -> script.myPlayer().isInteracting(script.getNpcs()
+                    .closest("Survival Expert")), 500, 5000);
         }
-        script.sleep(Utils.boundedInteractionTime(1000, 1200));
+        script.sleep(Utils.boundedInteractionTime(800, 1200));
         Utils.continueToEnd(script);
+        script.sleep(Utils.randomInteractionTime(false));
         if (!script.myPlayer().isInteracting(script.getNpcs().closest("Survival Expert"))) {
             Timing.waitCondition(() -> !script.myPlayer().isInteracting(script.getNpcs().closest(
                     "Survival Expert")), 500, 5000);
-        script.sleep(Utils.randomInteractionTime(false));
-
+            script.sleep(Utils.randomInteractionTime(false));
+        }
         //Fishing
         NPC fishingSpots = script.getNpcs().closest("Fishing spot");
 
@@ -53,89 +50,71 @@ public class SurvivalExpert {
                 Timing.waitCondition(() -> script.getTabs().isOpen(Tab.INVENTORY), 100, 5000);
             }
             script.log("Failed to open inventory, retrying...");
-        } while(!script.getTabs().isOpen(Tab.INVENTORY));
+        } while (!script.getTabs().isOpen(Tab.INVENTORY));
 
         //Inventory tab checked
         script.log("Attempting to fish");
-        while(!script.myPlayer().isAnimating()) {
-            script.sleep(Utils.boundedInteractionTime(1000, 3000));
-            fishingSpots.interact("Net");
-            script.sleep(Utils.boundedInteractionTime(1000, 3000));
+        while (!script.myPlayer().isAnimating()) {
+            Timing.waitCondition(() -> fishingSpots.interact(), 500, 3000);
         }
 
         //While not inactive
         if (!(script.myPlayer().isAnimating() && script.getInventory().contains("Raw shrimps"))) {
-            new ConditionalSleep(10000) {
-                @Override
-                public boolean condition() throws InterruptedException {
-                    script.sleep(10);
-                    return (!script.myPlayer().isAnimating() &&
-                            script.getInventory().contains("Raw shrimps"));
-                }
-            }.sleep();
+            Timing.waitCondition(() -> (!script.myPlayer().isAnimating() &&
+                    script.getInventory().contains("Raw shrimps")), 500, 8000);
         }
         //At this point fishing should be done
-        script.sleep(Utils.boundedInteractionTime(1000, 3000));
+        script.sleep(Utils.randomInteractionTime(false));
 
         //Check experience tab
         do {
             script.log("Attempting to open skills tab");
-            script.getTabs().open(Tab.SKILLS);
-            script.sleep(Utils.boundedInteractionTime(400, 800));
-            script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.skillsTab).interact();
-            script.sleep(Utils.boundedInteractionTime(500, 1000));
+            Timing.waitCondition(() -> script.getTabs().open(Tab.SKILLS), 200, 1600);
+            script.sleep(Utils.randomInteractionTime(false));
+            Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.skillsTab).interact()
+                    , 200, 1600);
+            script.sleep(Utils.randomInteractionTime(false));
         } while (!script.getTabs().isOpen(Tab.SKILLS));
-
-        script.sleep(Utils.boundedInteractionTime(5000, 10000));
-        script.sleep(Utils.boundedInteractionTime(800, 1200));
+        script.sleep(Utils.randomInteractionTime(false));
         //Experience tab checked
 
         //Second interaction
         //Config state: 70
-        while(script.getConfigs().get(281) == 60) {
+        while (script.getConfigs().get(281) == 60) {
             script.log("Attempting to talk to Survival expert");
             script.sleep(Utils.randomInteractionTime(false));
             Utils.interactWithNpc(script.getNpcs().closest("Survival Expert"), "Talk-to"
                     , script);
             if (!script.myPlayer().isInteracting(script.getNpcs().closest("Survival Expert"))) {
-                new ConditionalSleep(5000) {
-                    @Override
-                    public boolean condition() throws InterruptedException {
-                        script.sleep(100);
-                        return script.myPlayer().isInteracting(script.getNpcs().closest("Survival Expert"));
-                    }
-                }.sleep();
+                Timing.waitCondition(() -> script.myPlayer().isInteracting(
+                        script.getNpcs().closest("Survival Expert")), 500, 5000);
             }
-            script.sleep(Utils.boundedInteractionTime(1000, 1500));
+            script.sleep(Utils.randomInteractionTime(false));
             Utils.continueToEnd(script);
+            script.sleep(Utils.randomInteractionTime(true));
             if (script.myPlayer().isInteracting(script.getNpcs().closest("Survival Expert"))) {
-                new ConditionalSleep(5000) {
-                    @Override
-                    public boolean condition() throws InterruptedException {
-                        script.sleep(100);
-                        return !script.myPlayer().isInteracting(script.getNpcs().closest("Survival Expert"));
-                    }
-                }.sleep();
+                Timing.waitCondition(() -> script.myPlayer().isInteracting(
+                        script.getNpcs().closest("Survival Expert")), 500, 5000);
             }
         }
         script.sleep(Utils.randomInteractionTime(true));
         //Woodcutting
         while (!script.getInventory().contains("Logs")) {
-        RS2Object tree = script.getObjects().closest("Tree");
-        script.log("Attempting to cut down tree");
-        script.getCamera().toEntity(tree);
-        tree.interact("Chop down Tree");
-        new ConditionalSleep(5000, 10000) {
-            @Override
-            public boolean condition() throws InterruptedException {
-                script.sleep(100);
+            RS2Object tree = script.getObjects().closest("Tree");
+            script.log("Attempting to cut down tree");
+            Timing.waitCondition(() -> script.getCamera().toEntity(tree), 300, 2100);
+            tree.interact("Chop down Tree");
+            Timing.waitCondition(() ->{
                 if (script.myPlayer().getAnimation() == -1 && !(script.getInventory().contains("Logs")))
                     tree.interact("Chop down");
-                script.sleep(Utils.randomInteractionTime(false));
+                try {
+                    script.sleep(Utils.randomInteractionTime(false));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 return script.myPlayer().getAnimation() == -1 && script.getInventory().contains("Logs");
-            }
-        }.sleep();
-        script.sleep(Utils.randomInteractionTime(true));
+            }, 500, 7500);
+            script.sleep(Utils.randomInteractionTime(true));
         }
 
         //Firemaking
@@ -143,50 +122,43 @@ public class SurvivalExpert {
         Position randomTile = farAwayArea.getRandomPosition();
         while (!script.getObjects().get(randomTile.getX(), randomTile.getY()).isEmpty()) {
             randomTile = farAwayArea.getRandomPosition();
-            script.sleep(Utils.boundedInteractionTime(5000, 10000));
+            script.sleep(Utils.randomInteractionTime(false));
         }
         script.getWalking().walk(farAwayArea);
         script.log("Attempting to reach firemaking area");
         script.sleep(Utils.randomInteractionTime(false));
         Position finalRandomTile = randomTile;
-        new ConditionalSleep(5000, 10000) {
-            @Override
-            public boolean condition() throws InterruptedException {
-                script.sleep(100);
-                return script.myPlayer().getPosition().distance(finalRandomTile) == 0;
-            }
-        }.sleep();
+        Timing.waitCondition(() -> script.myPlayer().getPosition().distance(finalRandomTile) == 0,
+                7500, 500);
+
         //Opening inventory again
-        while(!script.getTabs().isOpen(Tab.INVENTORY)) {
+        do {
             script.log("Checking inventory");
-            script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.inventoryTab).interact();
-            script.sleep(Utils.boundedInteractionTime(800, 1200));
+            Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.inventoryTab)
+                    .interact(), 400, 2000);
+            script.sleep(Utils.randomInteractionTime(false));
             if (!script.getTabs().isOpen(Tab.INVENTORY)) {
-                new ConditionalSleep(5000) {
-                    @Override
-                    public boolean condition() throws InterruptedException {
-                        script.sleep(100);
-                        return script.getTabs().isOpen(Tab.INVENTORY);
-                    }
-                }.sleep();
+                Timing.waitCondition(() -> script.getTabs().isOpen(Tab.INVENTORY), 100, 5000);
             }
-        }
+            script.log("Failed to open inventory, retrying...");
+        } while (!script.getTabs().isOpen(Tab.INVENTORY));
 
         script.getInventory().getItem("Tinderbox").interact("Use");
         script.sleep(Utils.randomInteractionTime(false));
         script.getInventory().getItem("Logs").interact("Use");
         script.sleep(Utils.randomInteractionTime(false));
-        new ConditionalSleep(5000, 10000) {
-            @Override
-            public boolean condition() throws InterruptedException {
-                script.sleep(100);
-                if (script.getDialogues().isPendingContinuation()) {
+        Timing.waitCondition(() -> {
+            if (script.getDialogues().isPendingContinuation()) {
+                try {
                     Utils.continueNextDialogue(script);
-                    script.getWalking().walk(script.myPlayer().getPosition().translate(-1, -1));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                return false;
+                script.getWalking().walk(script.myPlayer().getPosition().translate(-1, -1));
             }
-        }.sleep();
+            return false;
+        }, 7500, 500);
+
         script.getInventory().getItem("Raw shrimps").interact("Use");
         script.sleep(Utils.randomInteractionTime(false));
         RS2Object campfire = script.getObjects().closest("Fire");
