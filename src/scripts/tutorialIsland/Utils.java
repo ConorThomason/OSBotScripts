@@ -18,7 +18,7 @@ public class Utils {
 
     public static int boundedInteractionTime(int low, int high){
         Random rnd = new Random();
-        return rnd.nextInt(high-low) + low;
+        return (int) Math.floor((rnd.nextGaussian()*(high-low)) + low);
     }
 
     public static void randomTypingIntervals(String typing, Script script) throws InterruptedException {
@@ -112,21 +112,18 @@ public class Utils {
     }
 
     public static boolean pendingContinuation(Script script) throws InterruptedException{
-        int iterator = 0;
         try {
             if (!script.getWidgets().containingText("Click here to continue").isEmpty()) {
                 return true;
             }
         } catch (NullPointerException e){
         }
-        iterator = 0;
         try {
             if (!script.getWidgets().get(217, 3).isHidden()) {
                 return true;
             }
         } catch (NullPointerException e){
         }
-        iterator = 0;
         try {
             if (!script.getWidgets().get(231, 3).isHidden()) {
                 return true;
