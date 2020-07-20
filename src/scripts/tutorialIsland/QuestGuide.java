@@ -19,12 +19,22 @@ public class QuestGuide {
                     "Talk-to", script);
             Timing.waitCondition(() -> {
                 try {
+                    return Utils.pendingContinuation(script);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }, 100, 3500);
+
+            Timing.waitCondition(() -> {
+                try {
                     return Utils.continueToEnd(script);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 return false;
             }, 1000, 8000);
+
             script.sleep(Utils.randomInteractionTime(false));
             Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.questTab)
                     .interact(), 50, 3000);
@@ -56,12 +66,7 @@ public class QuestGuide {
         }
         RS2Object ladder = script.getObjects().closest("Ladder");
         Timing.waitCondition(() -> ladder.interact("Climb-down"), 1200, 6000);
-        new ConditionalSleep(8000) {
-            @Override
-            public boolean condition() throws InterruptedException {
-                return script.myPosition().equals(new Position(3088, 9520, 0));
-            }
-        }.sleep();
+        Timing.waitCondition(() -> script.myPosition().equals(new Position(3088, 9520, 0)), 500, 6000);
         return true;
     }
 }
