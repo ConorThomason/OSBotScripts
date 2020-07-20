@@ -67,37 +67,40 @@ public class GielinorGuide {
     }
 
     public void optionActions(Script script) throws InterruptedException {
-        script.sleep(Utils.randomInteractionTime(true));
         script.log("Attempting to click options button");
-        script.getWidgets().get(TUTCONSTS.bottomRowTabs, TUTCONSTS.optionsTab).interact();
-        script.sleep(Utils.randomInteractionTime(true)); //Random ABC
+        Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.bottomRowTabs, TUTCONSTS.optionsTab).interact(),
+                500, 2000);
 
         script.log("Attempting to switch UI modes");
         RS2Widget configureInterface = script.getWidgets().get(
                 TUTCONSTS.optionsMenu, TUTCONSTS.optionsMenuAdvancedOptions,
                 TUTCONSTS.optionsMenuAdvancedOptionsComponent);
-        boolean result = configureInterface.interact();
-        while (!result){
-            script.sleep(Utils.boundedInteractionTime(1000, 1200));
-            configureInterface.interact();
-        }
-        script.sleep(Utils.boundedInteractionTime(1000, 1200));
-        if (configureInterface.isVisible()) {
-            RS2Widget advancedInterface = script.getWidgets()
-                    .containingActions(TUTCONSTS.advancedOptions, "Side-stones arrangement").get(0);
 
-            advancedInterface.interact();
-            script.sleep(Utils.boundedInteractionTime(800, 1200));
-            advancedInterface = script.getWidgets().containingActions(TUTCONSTS.advancedOptions, "Close").get(0);
-            advancedInterface.interact();
-            script.sleep(Utils.randomInteractionTime(false));
+//        boolean result = configureInterface.interact();
+//        while (!result){
+//            script.sleep(Utils.boundedInteractionTime(1000, 1200));
+//            configureInterface.interact();
+//        }
+
+        Timing.waitCondition(() -> configureInterface.interact(), 500, 4000);
+        if (configureInterface.isVisible()) {
+            final RS2Widget advancedInterface = script.getWidgets()
+                    .containingActions(TUTCONSTS.advancedOptions, "Side-stones arrangement").get(0);
+            Timing.waitCondition(() -> advancedInterface.interact(), 500, 4000);
+            Timing.waitCondition(() -> script.getWidgets().containingActions(
+                    TUTCONSTS.advancedOptions, "Close").get(0).interact(), 500, 4000);
+//            advancedInterface.interact();
+//            script.sleep(Utils.boundedInteractionTime(800, 1200));
+//            advancedInterface = script.getWidgets().containingActions(TUTCONSTS.advancedOptions, "Close").get(0);
+//            advancedInterface.interact();
+//            script.sleep(Utils.randomInteractionTime(false));
         } else
             script.log("Error opening config");
 
         script.log("Attempting to talk to guide");
         Utils.interactWithNpc(script.getNpcs().closest(TUTCONSTS.gielinorGuideID), "Talk-to Gielinor Guide",
                 script);
-        script.sleep(Utils.randomInteractionTime(true));
+
         while (!script.getWidgets().containingText("Click here to continue").isEmpty()) {
             script.getWidgets().getWidgetContainingText("Click here to continue").interact();
             script.sleep(Utils.randomInteractionTime(true));
