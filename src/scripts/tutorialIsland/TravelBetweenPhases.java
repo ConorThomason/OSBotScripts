@@ -27,38 +27,35 @@ public class TravelBetweenPhases {
         Area area = new Area(new Position(3089, 3093, 0), new Position(3088, 3090, 0));
         script.log("Traveling from survival expert");
         while (!area.contains(script.myPosition())) {
-            boolean isClosed = doorIsClosed(script.getObjects().closest("Gate"), script);
             RS2Object gate = script.getObjects().closest("Gate");
-            if (!isClosed) {
-                while (!isClosed) {
-                    script.sleep(Utils.boundedInteractionTime(1500, 2000));
-                    gate = script.getObjects().closest("Gate");
-                    isClosed = doorIsClosed(script.getObjects().closest("Gate"), script);
-                }
-            }
+            boolean isClosed = doorIsClosed(gate, script);
             script.getWalking().walk(new Position(3090, 3091, 0));
-            script.sleep(500);
+            Timing.waitCondition(() -> {
+                try {
+                    return doorIsClosed(gate, script);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }, 300, 6000);
+            script.sleep(Utils.randomInteractionTime(false));
             gate.interact("Open");
             script.sleep(800);
 
-            if (script.myPlayer().isMoving()) {
-                while (script.myPlayer().isMoving()) {
-                    script.sleep(Utils.boundedInteractionTime(1500, 2000));
-                }
+            while (script.myPlayer().isMoving()) {
+                Timing.waitCondition(() -> script.myPlayer().isMoving(), 250, 4000);
             }
         }
-        script.sleep(Utils.boundedInteractionTime(2000, 3000));
+        script.sleep(Utils.randomInteractionTime(false));
         script.log("Walking away from gate");
         script.getWalking().walk(new Position(3079, 3084, 0));
-        if (script.myPlayer().isMoving()) {
-            while (script.myPlayer().isMoving()) {
-                script.sleep(Utils.boundedInteractionTime(1500, 2000));
-            }
+        while (script.myPlayer().isMoving()) {
+            Timing.waitCondition(() -> script.myPlayer().isMoving(), 250, 4000);
         }
-        while(!TutorialIslandLocations.MASTER_NAVIGATOR.getLocation().contains(script.myPosition())) {
-            script.getObjects().closest("Door").interact();
-            script.sleep(Utils.boundedInteractionTime(2000, 4000));
-        }
+        Timing.waitCondition(() -> script.getObjects().closest("Door").interact(), 100, 1500);
+        script.sleep(Utils.randomInteractionTime(false));
+        Timing.waitCondition(() -> !TutorialIslandLocations.MASTER_NAVIGATOR.
+                getLocation().contains(script.myPosition()), 200, 10000);
         return true;
     }
 
@@ -74,13 +71,13 @@ public class TravelBetweenPhases {
         return true;
     }
 
-    public boolean travelFromMining(Script script) throws InterruptedException{
+    public boolean travelFromMining(Script script) throws InterruptedException {
         script.log("Traveling from Mining Expert");
         script.getWalking().webWalk(new Position(3104, 9507, 0));
         return true;
     }
 
-    public boolean travelFromCombat(Script script) throws InterruptedException{
+    public boolean travelFromCombat(Script script) throws InterruptedException {
         script.log("Traveling from Combat Instructor");
 //        script.getWalking().webWalk(new Position(3111, 9525, 0));
 //        while (script.myPlayer().isMoving())
@@ -91,17 +88,17 @@ public class TravelBetweenPhases {
         return true;
     }
 
-    public boolean travelFromBank(Script script){
+    public boolean travelFromBank(Script script) {
         script.getWalking().webWalk(new Position(3125, 3124, 0));
         return true;
     }
 
-    public boolean travelFromAccountGuide(Script script){
+    public boolean travelFromAccountGuide(Script script) {
         script.getWalking().webWalk(new Position(3126, 3107, 0));
         return true;
     }
 
-    public boolean travelFromBrotherBrace(Script script){
+    public boolean travelFromBrotherBrace(Script script) {
         script.getWalking().webWalk(new Position(3140, 3087, 0));
         return true;
     }
@@ -109,12 +106,11 @@ public class TravelBetweenPhases {
     public boolean doorIsClosed(RS2Object door, Script script) throws InterruptedException {
         try {
             return Arrays.asList(door.getDefinition().getActions()).contains("Open");
-        } catch (NullPointerException e){
-            script.sleep(Utils.boundedInteractionTime(200, 400));
+        } catch (NullPointerException e) {
+            script.sleep(Utils.randomInteractionTime(false));
             return doorIsClosed(door, script);
         }
     }
-
 
 
 }
