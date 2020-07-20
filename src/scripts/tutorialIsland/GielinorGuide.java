@@ -33,13 +33,16 @@ public class GielinorGuide {
         } else {
             //Initial interaction
             script.log("Attempting to talk to guide");
-            new ConditionalSleep(5000) {
-                @Override
-                public boolean condition() throws InterruptedException {
-                    return Utils.interactWithNpc(script.getNpcs().closest(TUTCONSTS.gielinorGuideID)
-                            , "Talk-to Gielinor Guide", script) && script.getDialogues().isPendingContinuation();
+            Utils.interactWithNpc(script.getNpcs().closest(TUTCONSTS.gielinorGuideID)
+                    , "Talk-to Gielinor Guide", script);
+            Timing.waitCondition(() -> {
+                try {
+                    return Utils.pendingContinuation(script);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            }.sleep();
+                return false;
+            }, 500, 6000);
             script.sleep(Utils.randomInteractionTime(false));
             script.log("Successfully spoken to guide");
             //Iterating through first conversation

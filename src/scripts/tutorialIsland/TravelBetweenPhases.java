@@ -54,7 +54,7 @@ public class TravelBetweenPhases {
         }
         Timing.waitCondition(() -> script.getObjects().closest("Door").interact(), 100, 1500);
         script.sleep(Utils.randomInteractionTime(false));
-        Timing.waitCondition(() -> !TutorialIslandLocations.MASTER_NAVIGATOR.
+        Timing.waitCondition(() -> TutorialIslandLocations.MASTER_NAVIGATOR.
                 getLocation().contains(script.myPosition()), 200, 10000);
         return true;
     }

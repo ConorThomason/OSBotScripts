@@ -56,6 +56,15 @@ public class QuestGuide {
             script.sleep(Utils.randomInteractionTime(true));
             Timing.waitCondition(() -> {
                 try {
+                    return Utils.pendingContinuation(script);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }, 100, 3500);
+
+            Timing.waitCondition(() -> {
+                try {
                     return Utils.continueToEnd(script);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
