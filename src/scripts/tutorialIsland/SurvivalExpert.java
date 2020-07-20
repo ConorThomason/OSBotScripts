@@ -132,7 +132,7 @@ public class SurvivalExpert {
                 250, 5000);
 
         //Opening inventory again
-        do {
+        while (!script.getTabs().isOpen(Tab.INVENTORY)) {
             script.log("Checking inventory");
             Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.inventoryTab)
                     .interact(), 200, 2000);
@@ -141,7 +141,7 @@ public class SurvivalExpert {
                 Timing.waitCondition(() -> script.getTabs().isOpen(Tab.INVENTORY), 100, 5000);
             }
             script.log("Failed to open inventory, retrying...");
-        } while (!script.getTabs().isOpen(Tab.INVENTORY));
+        }
 
         script.getInventory().getItem("Tinderbox").interact("Use");
         script.sleep(Utils.randomInteractionTime(false));

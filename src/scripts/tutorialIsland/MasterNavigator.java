@@ -12,13 +12,31 @@ public class MasterNavigator {
             return true;
         }
         script.log("Attempting to talk to Master Chef");
-        Utils.interactWithNpc(script.getNpcs().closest("Master Chef"), "Talk-to", script);
+        Utils.interactWithNpc(script.getNpcs().closest
+                ("Master Chef"), "Talk-to", script);
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.pendingContinuation(script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }, 100, 3000);
+
         script.sleep(Utils.randomInteractionTime(true));
-        Utils.continueToEnd(script);
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.continueToEnd(script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }, 1000, 8000);
+
 
         script.log("Opening inventory (if required)");
         //Making sure inventory is open
-        do {
+        while (!script.getTabs().isOpen(Tab.INVENTORY)) {
             script.log("Checking inventory");
             Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.inventoryTab)
                     .interact(), 400, 2000);
@@ -27,7 +45,7 @@ public class MasterNavigator {
                 Timing.waitCondition(() -> script.getTabs().isOpen(Tab.INVENTORY), 100, 5000);
             }
             script.log("Failed to open inventory, retrying...");
-        } while (!script.getTabs().isOpen(Tab.INVENTORY));
+        } ;
 
         script.log("Making dough");
         while (!script.getInventory().contains("Bread dough")) {
