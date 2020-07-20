@@ -18,35 +18,38 @@ public class MasterNavigator {
 
         script.log("Opening inventory (if required)");
         //Making sure inventory is open
-        while (!script.getTabs().isOpen(Tab.INVENTORY)) {
+        do {
             script.log("Checking inventory");
-            script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.inventoryTab).interact();
-            script.sleep(Utils.boundedInteractionTime(800, 1200));
+            Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.inventoryTab)
+                    .interact(), 400, 2000);
+            script.sleep(Utils.randomInteractionTime(false));
             if (!script.getTabs().isOpen(Tab.INVENTORY)) {
-                new ConditionalSleep(5000) {
-                    @Override
-                    public boolean condition() throws InterruptedException {
-                        script.sleep(100);
-                        return script.getTabs().isOpen(Tab.INVENTORY);
-                    }
-                }.sleep();
+                Timing.waitCondition(() -> script.getTabs().isOpen(Tab.INVENTORY), 100, 5000);
             }
-        }
+            script.log("Failed to open inventory, retrying...");
+        } while (!script.getTabs().isOpen(Tab.INVENTORY));
+
         script.log("Making dough");
         while (!script.getInventory().contains("Bread dough")) {
-            script.getInventory().getItem("Bucket of water").interact("Use");
+            Timing.waitCondition(() -> script.getInventory().getItem("Bucket of water")
+                    .interact("Use"), 50, 3000);
             script.sleep(Utils.randomInteractionTime(false));
-            script.getInventory().getItem("Pot of flour").interact("Use");
+            Timing.waitCondition(() -> script.getInventory().getItem("Pot of flour")
+                    .interact("Use"), 50, 3000);
             script.sleep(Utils.randomInteractionTime(false));
         }
         //Dough should be made
         //Bake bread
         script.log("Baking bread");
-        Utils.interactItemWithObject(script.getInventory().getItem("Bread dough"),
-                script.getObjects().closest("Range"), "Bread", script);
-        while (script.myPlayer().isAnimating()) {
-            script.sleep(1000);
-        }
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.interactItemWithObject(script.getInventory().getItem("Bread dough"),
+                        script.getObjects().closest("Range"), "Bread", script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }, 200, 5000);
         return true;
     }
 }
