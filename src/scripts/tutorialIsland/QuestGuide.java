@@ -15,38 +15,47 @@ public class QuestGuide {
             script.log("Skipping to mining instructor section");
         }
         else {
-            boolean result = false;
-            while (!result) {
-                result = Utils.interactWithNpc(script.getNpcs().closest("Quest Guide"),
-                        "Talk-to", script);
-                script.sleep(Utils.boundedInteractionTime(1000, 2000));
-            }
-            Utils.continueToEnd(script);
-            script.sleep(Utils.boundedInteractionTime(1000, 2000));
-            script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.questTab).interact();
-            script.sleep(Utils.randomInteractionTime(false));
-            while (!script.getTabs().isOpen(Tab.QUEST)) {
-                script.log("Checking quest");
-                script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.questTab).interact();
-                script.sleep(Utils.boundedInteractionTime(800, 1200));
-                if (!script.getTabs().isOpen(Tab.QUEST)) {
-                    new ConditionalSleep(5000) {
-                        @Override
-                        public boolean condition() throws InterruptedException {
-                            script.sleep(100);
-                            return script.getTabs().isOpen(Tab.QUEST);
-                        }
-                    }.sleep();
+            Utils.interactWithNpc(script.getNpcs().closest("Quest Guide"),
+                    "Talk-to", script);
+            Timing.waitCondition(() -> {
+                try {
+                    return Utils.continueToEnd(script);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                return false;
+            }, 1000, 8000);
+            script.sleep(Utils.randomInteractionTime(false));
+            Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.questTab)
+                    .interact(), 50, 3000);
+            script.sleep(Utils.randomInteractionTime(false));
+
+            while (!script.getTabs().isOpen(Tab.QUEST)) {
+                script.log("Checking Quest tab");
+                Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.questTab)
+                        .interact(), 200, 2000);
+                script.sleep(Utils.randomInteractionTime(false));
+                if (!script.getTabs().isOpen(Tab.QUEST)) {
+                    Timing.waitCondition(() -> script.getTabs().isOpen(Tab.QUEST), 100, 5000);
+                }
+                script.log("Failed to open inventory, retrying...");
             }
-            script.sleep(Utils.boundedInteractionTime(1000, 2000));
+
+            script.sleep(Utils.randomInteractionTime(false));
             Utils.interactWithNpc(script.getNpcs().closest("Quest Guide"), "Talk-to", script);
             script.sleep(Utils.randomInteractionTime(true));
-            Utils.continueToEnd(script);
+            Timing.waitCondition(() -> {
+                try {
+                    return Utils.continueToEnd(script);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }, 1000, 8000);
             script.sleep(Utils.randomInteractionTime(true));
         }
         RS2Object ladder = script.getObjects().closest("Ladder");
-        ladder.interact("Climb-down");
+        Timing.waitCondition(() -> ladder.interact("Climb-down"), 1200, 6000);
         new ConditionalSleep(8000) {
             @Override
             public boolean condition() throws InterruptedException {

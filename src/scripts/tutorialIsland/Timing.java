@@ -1,5 +1,6 @@
 package scripts.tutorialIsland;
 
+import java.util.Random;
 import java.util.function.BooleanSupplier;
 import java.util.concurrent.TimeUnit;
 
@@ -61,6 +62,8 @@ public class Timing
      */
     public static boolean waitCondition(BooleanSupplier condition, int cycleTime, int timeout)
     {
+        Random rand = new Random();
+        cycleTime = (int) Math.floor(0.9 + (1.1-0.9) * rand.nextDouble());
         return new ConditionalSleep(timeout, cycleTime)
         {
             @Override
