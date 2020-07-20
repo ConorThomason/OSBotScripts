@@ -40,14 +40,9 @@ public class GielinorGuide {
                             , "Talk-to Gielinor Guide", script) && script.getDialogues().isPendingContinuation();
                 }
             }.sleep();
-            script.sleep(Utils.randomInteractionTime(true));
             script.log("Successfully spoken to guide");
             //Iterating through first conversation
-            while (script.getDialogues().isPendingContinuation()) {
-                script.log("Continuing...");
-                script.getDialogues().clickContinue();
-                script.sleep(Utils.randomInteractionTime(true)); //ABC stuff
-            }
+            Utils.continueToEnd(script);
 
             //Selecting experience
             if (!script.getDialogues().isPendingContinuation()) {
@@ -63,14 +58,8 @@ public class GielinorGuide {
                 }.sleep();
             }
             script.log("Clicked experience choice");
-            script.sleep(800);
-            script.sleep(Utils.randomInteractionTime(true));
             //Moving through post experience-selection dialogue
-            while (!script.getWidgets().containingText("Click here to continue").isEmpty()) {
-                script.getWidgets().getWidgetContainingText("Click here to continue").interact();
-                script.sleep(Utils.randomInteractionTime(true));
-            }
-            script.sleep(Utils.randomInteractionTime(true));
+            Utils.continueToEnd(script);
             //*Should* be complete at this point, moving on to options section
             optionActions(script);
             return true;

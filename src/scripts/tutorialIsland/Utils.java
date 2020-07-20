@@ -11,9 +11,9 @@ public class Utils {
     public static int randomInteractionTime(boolean chat) {
         Random rnd = new Random();
         if (chat)
-            return rnd.nextInt(800) + 1000;
+            return (int) Math.floor((rnd.nextGaussian()*800) + 1000);
         else
-            return rnd.nextInt(800) + 300;
+            return (int) Math.floor((rnd.nextGaussian()*800) + 300);
     }
 
     public static int boundedInteractionTime(int low, int high){
