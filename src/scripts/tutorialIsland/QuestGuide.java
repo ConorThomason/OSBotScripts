@@ -50,7 +50,7 @@ public class QuestGuide {
                 if (!script.getTabs().isOpen(Tab.QUEST)) {
                     Timing.waitCondition(() -> script.getTabs().isOpen(Tab.QUEST), 100, 5000);
                 }
-                script.log("Failed to open inventory, retrying...");
+                script.log("Failed to open quest tab, retrying...");
             }
 
             script.sleep(Utils.randomInteractionTime(false));
