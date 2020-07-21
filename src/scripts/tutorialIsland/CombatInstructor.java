@@ -232,9 +232,11 @@ public class CombatInstructor {
             rangedGiantRat = script.getNpcs().closest("Giant rat");
         }
         NPC finalRangedGiantRat = rangedGiantRat;
+        script.log("Attempting to move to ideal spot");
         Timing.waitCondition(() -> script.getWalking().walk(new Position(3107, 9511, 0)),
                 1000, 10000);
         script.sleep(Utils.randomInteractionTime(false));
+        script.log("Attempting to check position");
         Timing.waitCondition(() -> script.myPosition().equals(new Position(3107, 9511, 0)),
                 100, 5000);
         Timing.waitCondition(() -> finalRangedGiantRat.interact("Attack"), 1000, 10000);

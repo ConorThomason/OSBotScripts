@@ -33,7 +33,7 @@ public class MagicInstructor {
         }, 1000, 8000);
         script.sleep(Utils.randomInteractionTime(false));
         script.log("Interacting with spell tab");
-        Timing.waitCondition(() ->script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.spellTab).interact(),
+        Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.spellTab).interact(),
                 1000, 8000);
         script.sleep(Utils.randomInteractionTime(false));
         script.log("Attempting to talk to Magic Instructor");
@@ -77,9 +77,14 @@ public class MagicInstructor {
                 }
                 return false;
             }, 1000, 8000);
-            NPC chicken = script.getNpcs().closest("Chicken");
-            Timing.waitCondition(() -> script.getMagic().castSpellOnEntity(
-                    Spells.NormalSpells.WIND_STRIKE, chicken), 1950, 12000);
+            while (!script.getWidgets().containingText(TUTCONSTS.instructionsInterface, "You now have some runes")
+                    .isEmpty()) {
+                NPC chicken = script.getNpcs().closest("Chicken");
+                Timing.waitCondition(() -> script.getMagic().castSpellOnEntity(
+                        Spells.NormalSpells.WIND_STRIKE, chicken), 1950, 12000);
+                script.sleep(Utils.randomInteractionTime(false));
+            }
+
         } catch (IndexOutOfBoundsException e) {
             //nop
         }

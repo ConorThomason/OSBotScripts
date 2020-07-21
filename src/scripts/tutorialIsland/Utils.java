@@ -15,9 +15,9 @@ public class Utils {
     public static int randomInteractionTime(boolean chat) {
         Random rnd = new Random();
         if (chat)
-            return (int) Math.floor((rnd.nextGaussian()*25) + 215);
-        else
-            return (int) Math.floor((rnd.nextGaussian()*25) + 615);
+            return (int) Math.floor((rnd.nextGaussian()*25) + 215 + 100); //215 is average human reaction time
+        else                                                              //Added 100 for recognition
+            return (int) Math.floor((rnd.nextGaussian()*25) + 615); //+400 for conversation recognition
     }
     public static void interruptionCheck(Script script) throws InterruptedException {
         int currentTotalLevel = Arrays.stream(Skill.values())
