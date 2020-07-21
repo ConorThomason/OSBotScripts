@@ -213,8 +213,7 @@ public class CombatInstructor {
             script.log("Attempt to equip Bronze arrow failed; not found");
         }
         script.sleep(Utils.randomInteractionTime(false));
-        Timing.waitCondition(() -> script.getWalking().walk(new Position(3107, 9511, 0)),
-                1000, 10000);
+        script.getWalking().walk(new Position(3107, 9511, 0));
         script.sleep(Utils.randomInteractionTime(false));
         Timing.waitCondition(() -> script.myPosition().equals(new Position(3107, 9511, 0))
                 ,1000, 10000);
