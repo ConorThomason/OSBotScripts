@@ -15,69 +15,116 @@ public class MagicInstructor {
         }
         script.log("Attempting to talk to Magic Instructor");
         Utils.interactWithNpc(script.getNpcs().closest("Magic Instructor"), "Talk-to", script);
-        script.sleep(1000);
-        while (!Utils.pendingContinuation(script)) {
-            script.sleep(1000);
-            Utils.interactWithNpc(script.getNpcs().closest("Magic Instructor"), "Talk-to", script);
-        }
-        script.sleep(1000);
-        script.log("Continuing to end");
-        Utils.continueToEnd(script);
-        script.sleep(Utils.boundedInteractionTime(800, 1200));
-        script.log("Interacting with spell tab");
-        script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.spellTab).interact();
-        script.sleep(Utils.boundedInteractionTime(800, 1200));
-        script.log("Attempting to talk to Magic Instructor");
-        new ConditionalSleep(5000) {
-            @Override
-            public boolean condition() throws InterruptedException {
-                return Utils.interactWithNpc(script.getNpcs().closest("Magic Instructor"),
-                        "Talk-to", script);
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.pendingContinuation(script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        }.sleep();
-        script.sleep(Utils.boundedInteractionTime(800, 1200));
-        Utils.continueToEnd(script);
-        script.sleep(Utils.boundedInteractionTime(800, 1200));
+            return false;
+        }, 100, 3500);
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.continueToEnd(script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }, 1000, 8000);
+        script.sleep(Utils.randomInteractionTime(false));
+        script.log("Interacting with spell tab");
+        Timing.waitCondition(() ->script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.spellTab).interact(),
+                1000, 8000);
+        script.sleep(Utils.randomInteractionTime(false));
+        script.log("Attempting to talk to Magic Instructor");
+        Utils.interactWithNpc(script.getNpcs().closest("Magic Instructor"), "Talk-to", script);
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.pendingContinuation(script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }, 100, 3500);
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.continueToEnd(script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }, 1000, 8000);
         magicPhase(script);
-        script.sleep(1000);
         postMagicPhase(script);
         return true;
     }
 
     public boolean magicPhase(Script script) throws InterruptedException {
         try {
-            if (Utils.pendingContinuation(script)) {
-                Utils.continueToEnd(script);
-            }
+            Timing.waitCondition(() -> {
+                try {
+                    return Utils.pendingContinuation(script);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }, 100, 3500);
+            Timing.waitCondition(() -> {
+                try {
+                    return Utils.continueToEnd(script);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }, 1000, 8000);
             NPC chicken = script.getNpcs().closest("Chicken");
-            boolean result = script.getMagic().castSpellOnEntity(Spells.NormalSpells.WIND_STRIKE, chicken);
-            while(!result){
-                script.sleep(Utils.boundedInteractionTime(1500, 2400));
-                result = script.getMagic().castSpellOnEntity(Spells.NormalSpells.WIND_STRIKE, chicken);
-            }
+            Timing.waitCondition(() -> script.getMagic().castSpellOnEntity(
+                    Spells.NormalSpells.WIND_STRIKE, chicken), 1950, 12000);
         } catch (IndexOutOfBoundsException e) {
             //nop
         }
+        Utils.randomInteractionTime(false);
         return true;
     }
 
     public boolean postMagicPhase(Script script) throws InterruptedException {
         script.log("Attempting to talk to Magic Instructor after magic");
-        new ConditionalSleep(5000) {
-            @Override
-            public boolean condition() throws InterruptedException {
-                return Utils.interactWithNpc(script.getNpcs().closest("Magic Instructor"),
-                        "Talk-to", script);
+        Utils.interactWithNpc(script.getNpcs().closest("Magic Instructor"), "Talk-to", script);
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.pendingContinuation(script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        }.sleep();
-        script.sleep(Utils.boundedInteractionTime(1000, 1400));
-        Utils.continueToEnd(script);
-        script.sleep(Utils.boundedInteractionTime(800, 1200));
+            return false;
+        }, 100, 3500);
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.continueToEnd(script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }, 1000, 8000);
         script.log("Selecting yes");
-        script.getDialogues().selectOption(1);
-        script.sleep(Utils.boundedInteractionTime(800, 1200));
-        Utils.continueToEnd(script);
-        script.sleep(Utils.boundedInteractionTime(800, 1200));
+        Timing.waitCondition(() -> script.getDialogues().selectOption(1), 1000, 8000);
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.pendingContinuation(script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }, 100, 3500);
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.continueToEnd(script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }, 1000, 8000);
+        script.sleep(Utils.randomInteractionTime(false));
         return true;
     }
 }
