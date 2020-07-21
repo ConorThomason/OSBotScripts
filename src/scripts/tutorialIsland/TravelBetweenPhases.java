@@ -11,6 +11,7 @@ import java.util.Arrays;
 public class TravelBetweenPhases {
 
     public boolean travelFromGuide(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         script.log("Traveling from Gielinor Guide");
         RS2Object door = script.getObjects().closest("Door");
         script.getCamera().toEntity(door);
@@ -24,6 +25,7 @@ public class TravelBetweenPhases {
     }
 
     public boolean travelFromSurvivalExpert(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         Area area = new Area(new Position(3089, 3093, 0), new Position(3088, 3090, 0));
         script.log("Traveling from survival expert");
         while (!area.contains(script.myPosition())) {
@@ -60,24 +62,28 @@ public class TravelBetweenPhases {
     }
 
     public boolean travelFromMasterNavigator(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         script.log("Traveling from master navigator");
         script.getWalking().webWalk(new Position(3086, 3125, 0));
         return true;
     }
 
     public boolean travelFromQuestGuide(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         script.log("Traveling from Quest Guide");
         script.getWalking().webWalk(new Position(3080, 9505, 0));
         return true;
     }
 
     public boolean travelFromMining(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         script.log("Traveling from Mining Expert");
         script.getWalking().webWalk(new Position(3104, 9507, 0));
         return true;
     }
 
     public boolean travelFromCombat(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         script.log("Traveling from Combat Instructor");
 //        script.getWalking().webWalk(new Position(3111, 9525, 0));
 //        while (script.myPlayer().isMoving())
@@ -88,22 +94,26 @@ public class TravelBetweenPhases {
         return true;
     }
 
-    public boolean travelFromBank(Script script) {
+    public boolean travelFromBank(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         script.getWalking().webWalk(new Position(3125, 3124, 0));
         return true;
     }
 
-    public boolean travelFromAccountGuide(Script script) {
+    public boolean travelFromAccountGuide(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         script.getWalking().webWalk(new Position(3126, 3107, 0));
         return true;
     }
 
-    public boolean travelFromBrotherBrace(Script script) {
+    public boolean travelFromBrotherBrace(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         script.getWalking().webWalk(new Position(3140, 3087, 0));
         return true;
     }
 
     public boolean doorIsClosed(RS2Object door, Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         try {
             return Arrays.asList(door.getDefinition().getActions()).contains("Open");
         } catch (NullPointerException e) {

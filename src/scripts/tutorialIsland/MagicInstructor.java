@@ -7,6 +7,7 @@ import org.osbot.rs07.utility.ConditionalSleep;
 
 public class MagicInstructor {
     public boolean magicInstructor(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         if (!script.getWidgets().containingText(TUTCONSTS.instructionsInterface, "You now have some runes")
                 .isEmpty()) {
             magicPhase(script);

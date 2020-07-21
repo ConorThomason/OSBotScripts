@@ -10,6 +10,7 @@ import org.osbot.rs07.utility.ConditionalSleep;
 public class CombatInstructor {
 
     public boolean combatInstructor(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         String bronzeDaggerComponent = script.getWidgets().get(
                 TUTCONSTS.instructionsInterface, TUTCONSTS.instructionsChild, TUTCONSTS.instructionsComponent)
                 .getMessage();

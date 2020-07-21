@@ -4,6 +4,7 @@ import org.osbot.rs07.script.Script;
 
 public class BrotherBrace {
     public boolean brotherBrace(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         script.log("Attempting to talk to Brother Brace");
         Utils.interactWithNpc(script.getNpcs().closest("Brother Brace"), "Talk-to", script);
         script.sleep(Utils.boundedInteractionTime(800, 1200));

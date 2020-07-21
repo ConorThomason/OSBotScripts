@@ -12,6 +12,7 @@ import org.osbot.rs07.utility.ConditionalSleep;
 public class SurvivalExpert {
 
     public boolean survivalExpert(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         RS2Widget instructionsInterface = script.getWidgets().get(TUTCONSTS.instructionsInterface,
                 TUTCONSTS.instructionsChild, TUTCONSTS.instructionsComponent);
         if (instructionsInterface.getMessage().contains("you've just cooked your first") ||
@@ -55,7 +56,7 @@ public class SurvivalExpert {
         //Inventory tab checked
         script.log("Attempting to fish");
         while (!script.myPlayer().isAnimating()) {
-            Timing.waitCondition(() -> fishingSpots.interact(), 500, 3000);
+            Timing.waitCondition(() -> fishingSpots.interact(), 1500, 10000);
         }
 
         //While not inactive

@@ -4,6 +4,7 @@ import org.osbot.rs07.script.Script;
 
 public class AccountGuide {
     public boolean accountGuide(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         try {
             if (script.getWidgets().containingText(TUTCONSTS.instructionsInterface, "Moving on").get(0)
                     .getMessage().contains("Moving on")) {

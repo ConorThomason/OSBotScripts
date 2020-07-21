@@ -3,11 +3,15 @@ package scripts.tutorialIsland;
 import org.osbot.rs07.api.model.Item;
 import org.osbot.rs07.api.model.NPC;
 import org.osbot.rs07.api.model.RS2Object;
+import org.osbot.rs07.api.ui.RS2Widget;
+import org.osbot.rs07.api.ui.Skill;
 import org.osbot.rs07.script.Script;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Utils {
+    public static int totalLevel = 0;
     public static int randomInteractionTime(boolean chat) {
         Random rnd = new Random();
         if (chat)
@@ -15,7 +19,39 @@ public class Utils {
         else
             return (int) Math.floor((rnd.nextGaussian()*25) + 615);
     }
+    public static void interruptionCheck(Script script) throws InterruptedException {
+        int currentTotalLevel = Arrays.stream(Skill.values())
+                .mapToInt(skill -> script.getSkills().getStatic(skill))
+                .sum();
+        if (totalLevel == 0){
+            script.log("Setting initial total level");
+            totalLevel = currentTotalLevel;
+        }
+        if (currentTotalLevel > totalLevel){
+            script.log("Total level has changed, level up interruption");
+            totalLevel = currentTotalLevel;
+            script.getWidgets().getWidgetContainingText(TUTCONSTS.cantReachThatInterface,
+                    "Click here to continue").interact();
+            script.sleep(Utils.randomInteractionTime(false));
+        } else if (script.getWidgets().getWidgetContainingText(TUTCONSTS.cantReachThatInterface,
+                "Click here to continue") != null){
+            try{
+                script.log("Attempting to interact with \"Click here to continue\"");
+                script.getWidgets().getWidgetContainingText(TUTCONSTS.cantReachThatInterface,
+                        "Click here to continue").interact();
+                script.sleep(Utils.randomInteractionTime(false));
+            } catch (NullPointerException e){
+                e.printStackTrace();
+                script.log("Interrupt isn't handled");
+            }
+        }
+    }
 
+    public static boolean checkSkippable (String messageGiven, String containCheck){
+        if (messageGiven != null && (messageGiven.contains(containCheck)))
+            return true;
+        return false;
+    }
     public static int boundedInteractionTime(int low, int high){
         Random rnd = new Random();
         return (int) Math.floor((rnd.nextGaussian()*100) + (high+low)/2);

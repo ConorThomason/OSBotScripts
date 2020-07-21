@@ -8,6 +8,8 @@ import org.osbot.rs07.utility.ConditionalSleep;
 
 public class QuestGuide {
     public boolean questGuide(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
+        script.sleep(Utils.randomInteractionTime(false));
         String questGuideDoneComponent = script.getWidgets().get(
                 TUTCONSTS.instructionsInterface, TUTCONSTS.instructionsChild, TUTCONSTS.instructionsComponent)
                 .getMessage();

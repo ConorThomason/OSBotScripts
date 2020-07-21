@@ -1,9 +1,13 @@
 package scripts.tutorialIsland;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.function.BooleanSupplier;
 import java.util.concurrent.TimeUnit;
 
+import org.osbot.rs07.api.ui.RS2Widget;
+import org.osbot.rs07.api.ui.Skill;
+import org.osbot.rs07.script.Script;
 import org.osbot.rs07.utility.ConditionalSleep;
 
 /**
@@ -60,8 +64,7 @@ public class Timing
      * @param timeout the maximum time to wait for the condition to be true
      * @return true if the condition was met within the threshold, or false if the timeout was exceeded
      */
-    public static boolean waitCondition(BooleanSupplier condition, int cycleTime, int timeout)
-    {
+    public static boolean waitCondition(BooleanSupplier condition, int cycleTime, int timeout) throws InterruptedException {
         Random rand = new Random();
         cycleTime = (int) Math.floor(0.9 + (1.1-0.9) * rand.nextDouble());
         return new ConditionalSleep(timeout, cycleTime)
@@ -92,9 +95,9 @@ public class Timing
      * @param timeout the maximum time to wait for the condition to be true
      * @return true if the condition was met within the threshold, or false if the timeout was exceeded
      */
-    public static boolean waitCondition(BooleanSupplier condition, int timeout)
-    {
+    public static boolean waitCondition(BooleanSupplier condition, int timeout) throws InterruptedException {
         return waitCondition(condition, 20, timeout);
     }
+
 
 }

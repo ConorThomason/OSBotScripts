@@ -6,6 +6,7 @@ import org.osbot.rs07.utility.ConditionalSleep;
 
 public class MasterNavigator {
     public boolean masterNavigator(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         if (script.getWidgets().get(TUTCONSTS.instructionsInterface, TUTCONSTS.instructionsChild,
                 TUTCONSTS.instructionsComponent).getMessage().contains("You've baked your first loaf of bread.")) {
             script.log("Skipping Master Chef phase");

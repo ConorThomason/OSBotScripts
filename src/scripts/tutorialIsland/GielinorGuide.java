@@ -16,6 +16,7 @@ public class GielinorGuide {
     final String brandNewPlayer = "I am brand new! This is my first time here.";
 
     public boolean gielinorGuide(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         String optionsOrDoneComponent = script.getWidgets().get(
                 TUTCONSTS.instructionsInterface, TUTCONSTS.instructionsChild, TUTCONSTS.instructionsComponent)
                 .getMessage();

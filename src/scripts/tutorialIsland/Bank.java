@@ -5,6 +5,7 @@ import org.osbot.rs07.script.Script;
 
 public class Bank {
     public boolean bank(Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
         script.log("Attempting to open bank");
         script.getObjects().closest("Bank booth").interact("Use");
         script.sleep(Utils.boundedInteractionTime(500, 1000));

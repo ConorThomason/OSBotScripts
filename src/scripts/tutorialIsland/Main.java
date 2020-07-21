@@ -7,7 +7,6 @@ import org.osbot.rs07.script.ScriptManifest;
         "Tut Island completion",
         version = 0.3, logo = "")
 public final class Main extends Script {
-
     @Override
     public int onLoop() throws InterruptedException {
         this.sleep(10);
