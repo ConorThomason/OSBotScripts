@@ -60,17 +60,19 @@ public class CombatInstructor {
         script.log("Continuing to end");
         Utils.continueToEnd(script);
         script.sleep(Utils.randomInteractionTime(false));
+
         script.log("Attempting to open equipment tab");
         boolean checkedEquipment = false;
-        while (!script.getTabs().isOpen(Tab.EQUIPMENT)) {
+        while (!checkedEquipment) {
             script.log("Checking Quest tab");
-            Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.equipmentTab)
+            checkedEquipment = Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.equipmentTab)
                     .interact(), 1000, 5000);
             script.sleep(Utils.randomInteractionTime(false));
             if (!script.getTabs().isOpen(Tab.EQUIPMENT)) {
                 Timing.waitCondition(() -> script.getTabs().isOpen(Tab.EQUIPMENT), 100, 5000);
             }
         }
+
         script.log("Equipment tab should be open");
         script.sleep(Utils.randomInteractionTime(false));
         script.log("Attempting to open detailed information window");
@@ -213,7 +215,8 @@ public class CombatInstructor {
             script.log("Attempt to equip Bronze arrow failed; not found");
         }
         script.sleep(Utils.randomInteractionTime(false));
-        script.getWalking().walk(new Position(3107, 9511, 0));
+        Timing.waitCondition(() -> script.getWalking().walk(new Position(3107, 9511, 0)),
+                1000, 10000);
         script.sleep(Utils.randomInteractionTime(false));
         Timing.waitCondition(() -> script.myPosition().equals(new Position(3107, 9511, 0))
                 ,1000, 10000);

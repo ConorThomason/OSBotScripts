@@ -15,14 +15,30 @@ public class AccountGuide {
         }
         script.log("Attempting to talk to Account Guide");
         Utils.interactWithNpc(script.getNpcs().closest("Account guide"), "Talk-to", script);
-        script.sleep(Utils.randomInteractionTime(true));
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.pendingContinuation(script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }, 100, 6000);
         Utils.continueToEnd(script);
         script.sleep(Utils.randomInteractionTime(true));
         script.log("Attempting to click Account tab");
-        script.getWidgets().get(TUTCONSTS.bottomRowTabsAlternative, TUTCONSTS.accountTab).interact();
+        Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.bottomRowTabsAlternative, TUTCONSTS.accountTab)
+                .interact(), 1000, 10000);
         script.sleep(Utils.randomInteractionTime(true));
         script.log("Attempting to talk to Account Guide");
         Utils.interactWithNpc(script.getNpcs().closest("Account guide"), "Talk-to", script);
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.pendingContinuation(script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }, 100, 6000);
         script.sleep(Utils.randomInteractionTime(true));
         Utils.continueToEnd(script);
         script.sleep(Utils.randomInteractionTime(true));

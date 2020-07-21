@@ -11,7 +11,8 @@ public class MiningInstructor {
         String bronzeDaggerComponent = script.getWidgets().get(
                 TUTCONSTS.instructionsInterface, TUTCONSTS.instructionsChild, TUTCONSTS.instructionsComponent)
                 .getMessage();
-        if (Utils.checkSkippable(bronzeDaggerComponent, "You've made a bronze bar!")) {
+        if (Utils.checkSkippable(bronzeDaggerComponent, "You've made a bronze bar!") && script.
+                getInventory().contains("Bronze bar")) {
             script.log("Skipping to bronze dagger section");
             daggerSection(script);
             return true;
@@ -53,9 +54,16 @@ public class MiningInstructor {
             script.sleep(Utils.randomInteractionTime(false));
         }
         RS2Object furnace = script.getObjects().closest("Furnace");
-        furnace.interact();
         script.log("Attempting to smith Bronze Bar");
-        Timing.waitCondition(() -> script.myPlayer().isAnimating(), 1000, 8000);
+        Timing.waitCondition(() -> {
+            try {
+                return Utils.interactItemWithObject(script.getInventory().getItem("Tin ore"),
+                        script.getObjects().closest("Furnace"), "Bronze bar", script);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }, 200, 8000);
         Timing.waitCondition(() -> !script.myPlayer().isAnimating(), 100, 5000);
         script.sleep(Utils.randomInteractionTime(false));
         daggerSection(script);

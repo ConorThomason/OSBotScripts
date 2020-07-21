@@ -105,7 +105,7 @@ public class Utils {
                             interact(), 200, 800);
                 }
             } catch (IndexOutOfBoundsException e){
-                //nop
+                return true;
             }
         }
         return true;
