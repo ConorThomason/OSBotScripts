@@ -83,8 +83,9 @@ public class MagicInstructor {
                 Timing.waitCondition(() -> script.getMagic().castSpellOnEntity(
                         Spells.NormalSpells.WIND_STRIKE, chicken), 1950, 12000);
                 script.sleep(Utils.randomInteractionTime(false));
+                Utils.interruptionCheck(script);
+                script.sleep(Utils.randomInteractionTime(true));
             }
-
         } catch (IndexOutOfBoundsException e) {
             //nop
         }
