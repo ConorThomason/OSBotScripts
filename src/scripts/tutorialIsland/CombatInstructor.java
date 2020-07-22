@@ -164,6 +164,7 @@ public class CombatInstructor {
             while (giantRat.getHealthPercent() != 0) {
                 script.sleep(Utils.randomInteractionTime(false));
             }
+            Utils.interruptionCheck(script);
             if (!script.getWidgets().containingText("Well done, you've made your first kill").isEmpty())
                 break;
             script.sleep(Utils.randomInteractionTime(true));
