@@ -2,7 +2,7 @@ package scripts.tutorialIsland;
 
 public class TUTCONSTS {
     final static public int characterCreationInterface = 558;
-        final static public int characterCreationUnknownInterface = 1;;
+        final static public int characterCreationUnknownInterface = 11;
         final static public int characterCreationError = 12;
         final static public int characterCreationDisplayName = 8;
         final static public int characterCreationLookupName = 17;

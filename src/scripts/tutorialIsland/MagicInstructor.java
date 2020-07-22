@@ -11,6 +11,7 @@ public class MagicInstructor {
         if (!script.getWidgets().containingText(TUTCONSTS.instructionsInterface, "You now have some runes")
                 .isEmpty()) {
             magicPhase(script);
+            postMagicPhase(script);
             return true;
         }
         script.log("Attempting to talk to Magic Instructor");

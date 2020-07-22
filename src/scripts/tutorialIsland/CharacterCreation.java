@@ -12,72 +12,54 @@ public class CharacterCreation {
         nameChoice(i);
         appearanceChoice(i);
     }
-    public void nameChoice(Script i) {
+    public void nameChoice(Script script) {
         //Name choose
         try {
-            RS2Widget displayName = i.getWidgets().get(
+            RS2Widget displayName = script.getWidgets().get(
                     TUTCONSTS.characterCreationInterface,TUTCONSTS.characterCreationDisplayName);
-            RS2Widget lookupName = i.getWidgets().
+            RS2Widget lookupName = script.getWidgets().
                     get(TUTCONSTS.characterCreationInterface, TUTCONSTS.characterCreationLookupName);
-            RS2Widget randomNameMiddle = i.getWidgets().get(TUTCONSTS.characterCreationInterface,
+            RS2Widget randomNameMiddle = script.getWidgets().get(TUTCONSTS.characterCreationInterface,
                     TUTCONSTS.characterCreationMiddleRandomNameSelection);
-            RS2Widget setNameButton = i.getWidgets().get
+            RS2Widget setNameButton = script.getWidgets().get
                     (TUTCONSTS.characterCreationInterface, TUTCONSTS.characterCreationSetNameButtonParent);
-            if(displayName.isVisible()){
-                displayName.interact();
-            }
-            else {
-                throw new NullPointerException();
-            }
-            i.sleep(Utils.boundedInteractionTime(1000,1500));
-            Utils.randomTypingIntervals("ExtraName", i);
-            i.sleep(Utils.randomInteractionTime(false));
-            i.log("Pressing enter to prompt name lookup");
-            i.keyboard.typeEnter();
-            i.sleep(Utils.randomInteractionTime(false));
-            i.log("Attempting to select suggested name");
-            if (randomNameMiddle == null) {
-                while (randomNameMiddle == null) {
-                    i.sleep(1000);
+            RS2Widget characterCreationNotice = script.getWidgets().get
+                    (TUTCONSTS.characterCreationInterface, TUTCONSTS.characterCreationError);
+            Timing.waitCondition(() -> displayName.interact(), 1000, 10000);
+            script.sleep(Utils.randomInteractionTime(false));
+            Utils.randomTypingIntervals("ExtraName", script);
+            String currentNotice = characterCreationNotice.getMessage();
+            Timing.waitCondition(() -> lookupName.interact(), 1000, 10000);
+            String finalCurrentNotice = currentNotice;
+            Timing.waitCondition(() -> !characterCreationNotice.getMessage().equals(finalCurrentNotice), 100, 5000);
+            script.sleep(Utils.randomInteractionTime(false));
+
+            if (characterCreationNotice.getMessage().contains("not available") || characterCreationNotice.getMessage()
+            .contains("error")){
+                String retryNotice;
+                while (!characterCreationNotice.getMessage().contains("Great!")) {
+                    retryNotice = characterCreationNotice.getMessage();
+                    Timing.waitCondition(() -> randomNameMiddle.interact(), 1000, 10000);
+                    script.sleep(Utils.randomInteractionTime(false));
+                    String finalRetryNotice = retryNotice;
+                    Timing.waitCondition(() -> !finalRetryNotice.equals(finalCurrentNotice),
+                            100, 5000);
                 }
             }
-            else{
-                randomNameMiddle.interact();
+            Timing.waitCondition(() -> setNameButton.interact(), 1000, 10000);
+            script.sleep(Utils.randomInteractionTime(false));
+            if (characterCreationNotice.getMessage().contains("error")){
+                nameChoice(script);
             }
-            i.sleep(Utils.randomInteractionTime(false));
-            String nameContent = randomNameMiddle.getMessage();
-            int iterator = 0;
-            while (!i.getWidgets().get(558,11).getMessage().equals(nameContent)) {
-                i.log("Attempting to select " + nameContent);
-                i.log("Failed random name click, retrying...");
-                i.sleep(Utils.randomInteractionTime(false));
-                iterator = iterator + 1;
-                if (!randomNameMiddle.isHidden() || iterator == 5) {
-                    i.log("Retrying name creation");
-                    characterCreation(i);
-                    return;
-                }
-                else
-                    break;
+            try {
+                Timing.waitCondition(() -> !characterCreationNotice.getMessage().contains("Requesting"),
+                        100, 10000);
+            } catch (NullPointerException f){
+                //nop, name should be accepted
             }
-            i.sleep(Utils.boundedInteractionTime(2000, 3000));
-            while (displayName != null) {
-                i.log("Attempting to confirm " + nameContent);
-                i.log("Failed confirmation click, retrying...");
-                i.sleep(Utils.randomInteractionTime(false));
-                if (setNameButton != null) {
-                    setNameButton.interact();
-                    i.sleep(Utils.randomInteractionTime(false));
-                }
-                if(i.getWidgets().get(TUTCONSTS.characterCreationInterface, TUTCONSTS.characterCreationError).
-                        getMessage().contains("We have encountered an error")) {
-                    nameChoice(i);
-                }
-            }
-            i.sleep(Utils.boundedInteractionTime(2000, 6000));
         } catch (NullPointerException | InterruptedException e) {
             e.printStackTrace();
-            i.log("Skipping name selection");
+            script.log("Skipping name selection");
         }
     }
 
@@ -85,7 +67,7 @@ public class CharacterCreation {
         try {
             script.log("Successfully confirmed name, initiating random appearance");
             //Random appearance
-            script.sleep(Utils.boundedInteractionTime(100, 200));
+            script.sleep(Utils.randomInteractionTime(false));
 
             final int[] leftArrows = {106, 107, 108, 109, 110, 111, 112, 105, 123, 122, 124, 125};
             final int[] rightArrows = {113, 114, 115, 116, 117, 118, 119, 121, 127, 129, 130, 131};
@@ -118,7 +100,6 @@ public class CharacterCreation {
             }
             script.getWidgets().get(269, 100).interact("Accept");
         } catch (NullPointerException | InterruptedException e) {
-            e.printStackTrace();
             script.log("Character already created, skipping to appropriate phase");
         }
 

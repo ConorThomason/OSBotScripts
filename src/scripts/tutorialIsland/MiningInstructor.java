@@ -45,12 +45,12 @@ public class MiningInstructor {
         while (!(script.getInventory().contains("Tin ore") && script.getInventory().contains("Copper ore"))) {
             script.log("Attempting to mine Tin");
             tinOre.interact("Mine");
-            Timing.waitCondition(() -> script.getInventory().contains("Tin ore"), 100, 5000);
+            Timing.waitCondition(() -> script.getInventory().contains("Tin ore"), 100, 8000);
             script.sleep(Utils.randomInteractionTime(false));
             RS2Object copperOre = script.getObjects().closest(10079);
             script.log("Attempting to mine Copper");
             copperOre.interact("Mine");
-            Timing.waitCondition(() -> script.getInventory().contains("Copper ore"), 100, 5000);
+            Timing.waitCondition(() -> script.getInventory().contains("Copper ore"), 100, 8000);
             script.sleep(Utils.randomInteractionTime(false));
         }
         RS2Object furnace = script.getObjects().closest("Furnace");
