@@ -55,10 +55,12 @@ public class MiningInstructor {
         }
         RS2Object furnace = script.getObjects().closest("Furnace");
         script.log("Attempting to smith Bronze Bar");
-        Utils.interactItemWithObject(script.getInventory().getItem("Tin ore"),
-                script.getObjects().closest("Furnace"), "Bronze bar", script);
-        Timing.waitCondition(() -> script.getInventory().contains("Bronze bar"), 200, 8000);
-        script.sleep(Utils.randomInteractionTime(false));
+        while (!script.getInventory().contains("Bronze bar")) {
+            Utils.interactItemWithObject(script.getInventory().getItem("Tin ore"),
+                    script.getObjects().closest("Furnace"), "Bronze bar", script);
+            Timing.waitCondition(() -> script.getInventory().contains("Bronze bar"), 200, 8000);
+            script.sleep(Utils.randomInteractionTime(false));
+        }
         daggerSection(script);
         return true;
     }
