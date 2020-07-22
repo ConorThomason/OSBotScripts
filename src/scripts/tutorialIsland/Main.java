@@ -92,6 +92,8 @@ public final class Main extends Script {
         }
         sleep(5000);
         getLogoutTab().logOut();
+        sleep(2500);
+        stop();
         return 0;
     }
 }

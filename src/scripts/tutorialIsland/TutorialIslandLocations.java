@@ -10,7 +10,7 @@ public enum TutorialIslandLocations {
     QUEST_GUIDE(new Area(new Position(3089, 3119, 0), new Position(3080, 3127, 0))),
     MINING_INSTRUCTOR(new Area(new Position(3078, 9508, 0), new Position(3082, 9504, 0))),
     COMBAT_INSTRUCTOR(new Area(new Position(3100, 9503, 0), new Position(3108, 9512, 0))),
-    ACCOUNT_GUIDE(new Area(new Position(3125, 3124, 0), new Position(3129, 3125, 0))),
+    ACCOUNT_GUIDE(new Area(new Position(3125, 3123, 0), new Position(3129, 3125, 0))),
     BROTHER_BRACE(new Area(new Position(3120, 3110, 0), new Position(3128, 3103, 0))),
     BANK(new Area(new Position(3118, 3125, 0), new Position(3124, 3119, 0))),
     MAGIC_INSTRUCTOR(new Area(new Position(3141, 3084, 0), new Position(3143, 3090, 0)));
