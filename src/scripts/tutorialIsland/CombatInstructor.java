@@ -153,14 +153,18 @@ public class CombatInstructor {
                 .getMessage();
         script.log("Attempting to attack giant rat (Melee)");
         NPC giantRat = script.getNpcs().closest("Giant rat");
-
-        int offset = 0;
-        do  {
-            giantRat = Utils.closestToPosition(script.myPosition(), "Giant rat", script, offset++).get(0);
-        } while (giantRat.isUnderAttack() || giantRat.getHealthPercent() < 100);
-        giantRat.interact("Attack");
-        while (giantRat.getHealthPercent() != 0) {
-            script.sleep(Utils.randomInteractionTime(false));
+        while(!script.getWidgets().containingText("Sit back and watch").isEmpty() ||
+        !script.getWidgets().containingText("It's time to slay some").isEmpty()) {
+            int offset = 0;
+            do {
+                Utils.interruptionCheck(script);
+                giantRat = Utils.closestToPosition(script.myPosition(), "Giant rat", script, offset++).get(0);
+            } while (giantRat.isUnderAttack() || giantRat.getHealthPercent() < 100);
+            giantRat.interact("Attack");
+            while (giantRat.getHealthPercent() != 0) {
+                script.sleep(Utils.randomInteractionTime(false));
+            }
+            script.sleep(Utils.randomInteractionTime(true));
         }
         script.log("Giant rat should be dead");
         script.log("Walking to Combat Instructor");
@@ -229,12 +233,6 @@ public class CombatInstructor {
         while (!script.getWidgets().containingText(skipString2b).isEmpty()) {
             NPC rangedGiantRat = script.getNpcs().closest("Giant rat");
             script.sleep(Utils.randomInteractionTime(false));
-            Timing.waitCondition(() -> {
-                        script.log("Attempting to check position");
-                        script.getWalking().walk(new Position(3107, 9512, 0));
-                        return script.myPosition().distance(new Position(3107, 9512, 0)) == 0;
-                    },
-                    1000, 10000);
             int offset = 0;
             do  {
                 rangedGiantRat = Utils.closestToPosition(new Position (3107, 9511, 0), "Giant rat",

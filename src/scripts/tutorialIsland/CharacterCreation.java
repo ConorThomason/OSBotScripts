@@ -25,6 +25,9 @@ public class CharacterCreation {
                     (TUTCONSTS.characterCreationInterface, TUTCONSTS.characterCreationSetNameButtonParent);
             RS2Widget characterCreationNotice = script.getWidgets().get
                     (TUTCONSTS.characterCreationInterface, TUTCONSTS.characterCreationError);
+            if (displayName == null){
+                throw new NullPointerException();
+            }
             Timing.waitCondition(() -> displayName.interact(), 1000, 10000);
             script.sleep(Utils.randomInteractionTime(false));
             Utils.randomTypingIntervals("ExtraName", script);

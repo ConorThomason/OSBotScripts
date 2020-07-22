@@ -51,9 +51,7 @@ public class TravelBetweenPhases {
         script.sleep(Utils.randomInteractionTime(false));
         script.log("Walking away from gate");
         script.getWalking().walk(new Position(3079, 3084, 0));
-        while (script.myPlayer().isMoving()) {
-            Timing.waitCondition(() -> script.myPlayer().isMoving(), 250, 4000);
-        }
+        Timing.waitCondition(() -> script.myPlayer().isMoving(), 250, 8000);
         Timing.waitCondition(() -> script.getObjects().closest("Door").interact(), 100, 1500);
         script.sleep(Utils.randomInteractionTime(false));
         Timing.waitCondition(() -> TutorialIslandLocations.MASTER_NAVIGATOR.
@@ -108,7 +106,7 @@ public class TravelBetweenPhases {
 
     public boolean travelFromBrotherBrace(Script script) throws InterruptedException {
         Utils.interruptionCheck(script);
-        script.getWalking().webWalk(new Position(3140, 3087, 0));
+        script.getWalking().webWalk(new Position(3140, 3090, 0));
         return true;
     }
 
