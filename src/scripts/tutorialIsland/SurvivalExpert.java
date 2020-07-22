@@ -129,7 +129,7 @@ public class SurvivalExpert {
         script.log("Attempting to reach firemaking area");
         script.sleep(Utils.randomInteractionTime(false));
         Position finalRandomTile = randomTile;
-        Timing.waitCondition(() -> script.myPosition().equals(finalRandomTile),
+        Timing.waitCondition(() -> script.myPosition().distance(finalRandomTile) == 0,
                 250, 5000);
 
         //Opening inventory again

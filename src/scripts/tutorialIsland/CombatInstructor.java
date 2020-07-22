@@ -64,7 +64,7 @@ public class CombatInstructor {
         script.log("Attempting to open equipment tab");
         boolean checkedEquipment = false;
         while (!checkedEquipment) {
-            script.log("Checking Quest tab");
+            script.log("Checking Equipment tab");
             checkedEquipment = Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.equipmentTab)
                     .interact(), 1000, 5000);
             script.sleep(Utils.randomInteractionTime(false));
@@ -117,11 +117,11 @@ public class CombatInstructor {
     public boolean meleeSection(Script script) throws InterruptedException {
         script.log("Attempting to equip both bronze sword and wooden shield");
         Timing.waitCondition(() -> script.getEquipment().equip(EquipmentSlot.WEAPON, "Bronze sword") ||
-                script.getEquipment().isWearingItem(EquipmentSlot.WEAPON, "Bronze Sword"),
+                        script.getEquipment().isWearingItem(EquipmentSlot.WEAPON, "Bronze Sword"),
                 1000, 8000);
         script.sleep(Utils.randomInteractionTime(false));
         Timing.waitCondition(() -> script.getEquipment().equip(EquipmentSlot.SHIELD, "Wooden shield") ||
-                script.getEquipment().isWearingItem(EquipmentSlot.SHIELD, "Wooden shield"),
+                        script.getEquipment().isWearingItem(EquipmentSlot.SHIELD, "Wooden shield"),
                 1000, 8000);
         script.sleep(Utils.randomInteractionTime(false));
         script.sleep(Utils.randomInteractionTime(false));
@@ -154,9 +154,10 @@ public class CombatInstructor {
         script.log("Attempting to attack giant rat (Melee)");
         NPC giantRat = script.getNpcs().closest("Giant rat");
 
-        while (giantRat.isUnderAttack() || giantRat.getHealthPercent() < 100) {
-            giantRat = script.getNpcs().closest("Giant rat");
-        }
+        int offset = 0;
+        do  {
+            giantRat = Utils.closestToPosition(script.myPosition(), "Giant rat", script, offset++).get(0);
+        } while (giantRat.isUnderAttack() || giantRat.getHealthPercent() < 100);
         giantRat.interact("Attack");
         while (giantRat.getHealthPercent() != 0) {
             script.sleep(Utils.randomInteractionTime(false));
@@ -200,56 +201,60 @@ public class CombatInstructor {
         //Equip bow and arrows
         script.log("Attempting to equip shortbow and bronze arrows");
         try {
-            Timing.waitCondition(() -> script.getEquipment().equip(EquipmentSlot.WEAPON, "Shortbow") ||
-                    script.getEquipment().isWearingItem(EquipmentSlot.WEAPON, "Shortbow"),
-                    1000, 10000);
+            Timing.waitCondition(() -> !(!script.getEquipment().isWearingItem(EquipmentSlot.WEAPON, "Shortbow") &&
+                            !script.getEquipment().equip(EquipmentSlot.WEAPON, "Shortbow")),
+                    600, 10000); //DeMorgan's law trickery
         } catch (NullPointerException e) {
             script.log("Attempt to equip Shortbow failed; not found");
         }
         script.sleep(Utils.randomInteractionTime(false));
         try {
-            Timing.waitCondition(() -> script.getEquipment().equip(EquipmentSlot.ARROWS, "Bronze arrow") ||
-                    script.getEquipment().isWearingItem(EquipmentSlot.ARROWS, "Bronze arrow"),
+            Timing.waitCondition(() -> !(!script.getEquipment().isWearingItem(EquipmentSlot.ARROWS, "Bronze arrow")
+                    && !script.getEquipment().equip(EquipmentSlot.ARROWS, "Bronze arrow")), //DeMorgan's
                     1000, 10000);
         } catch (NullPointerException e) {
             script.log("Attempt to equip Bronze arrow failed; not found");
         }
         script.sleep(Utils.randomInteractionTime(false));
-        Timing.waitCondition(() -> script.getWalking().walk(new Position(3107, 9511, 0)),
-                1000, 10000);
-        script.sleep(Utils.randomInteractionTime(false));
-        Timing.waitCondition(() -> script.myPosition().equals(new Position(3107, 9511, 0))
-                ,1000, 10000);
-        script.sleep(Utils.randomInteractionTime(false));
-
-        script.log("Attempting to attack Giant rat (Ranged)");
-        NPC rangedGiantRat = script.getNpcs().closest("Giant rat");
-        String bowMessageComponent = script.getWidgets().get(
-                TUTCONSTS.instructionsInterface, TUTCONSTS.instructionsChild, TUTCONSTS.instructionsComponent)
-                .getMessage();
-        //Now you have a bow and some arrows
-        while (rangedGiantRat.isUnderAttack() || rangedGiantRat.getHealthPercent() < 100) {
-            rangedGiantRat = script.getNpcs().closest("Giant rat");
-        }
-        NPC finalRangedGiantRat = rangedGiantRat;
         script.log("Attempting to move to ideal spot");
-        Timing.waitCondition(() -> script.getWalking().walk(new Position(3107, 9511, 0)),
-                1000, 10000);
-        script.sleep(Utils.randomInteractionTime(false));
-        script.log("Attempting to check position");
-        Timing.waitCondition(() -> script.myPosition().equals(new Position(3107, 9511, 0)),
-                100, 5000);
-        Timing.waitCondition(() -> finalRangedGiantRat.interact("Attack"), 1000, 10000);
-        while (rangedGiantRat.getHealthPercent() != 0) {
+//        Timing.waitCondition(() -> script.getWalking().walk(new Position(3107, 9511, 0)),
+//                1000, 10000);
+//        script.sleep(Utils.randomInteractionTime(false));
+//        script.log("Attempting to check position");
+//        Timing.waitCondition(() -> script.myPosition().distance(new Position(3107, 9511, 0)) == 0
+//                , 1000, 10000);
+//        script.sleep(Utils.randomInteractionTime(false));
+
+        //Now you have a bow and some arrows
+        while (!script.getWidgets().containingText(skipString2b).isEmpty()) {
+            NPC rangedGiantRat = script.getNpcs().closest("Giant rat");
+            script.sleep(Utils.randomInteractionTime(false));
+            Timing.waitCondition(() -> {
+                        script.log("Attempting to check position");
+                        script.getWalking().walk(new Position(3107, 9512, 0));
+                        return script.myPosition().distance(new Position(3107, 9512, 0)) == 0;
+                    },
+                    1000, 10000);
+            int offset = 0;
+            do  {
+                rangedGiantRat = Utils.closestToPosition(new Position (3107, 9511, 0), "Giant rat",
+                        script, offset++).get(0);
+            } while (rangedGiantRat.isUnderAttack() || rangedGiantRat.getHealthPercent() < 100);
+            NPC finalRangedGiantRat = rangedGiantRat;
+            script.log("Attempting to attack Giant rat (Ranged)");
+            Timing.waitCondition(() -> finalRangedGiantRat.interact("Attack"), 1000, 10000);
+            while (rangedGiantRat.getHealthPercent() != 0) {
+                Utils.interruptionCheck(script);
+                script.sleep(Utils.randomInteractionTime(false));
+            }
+            script.log("Giant rat should be dead");
             Utils.interruptionCheck(script);
             script.sleep(Utils.randomInteractionTime(false));
+            script.log("Combat Instructor phase complete, traveling...");
+            //Should now be attacking rat with bow. Upon completion, while loop will stop and return true
+            //Travel should take over after this
+            script.sleep(Utils.randomInteractionTime(false));
         }
-        script.log("Giant rat should be dead");
-        Utils.interruptionCheck(script);
-        script.sleep(Utils.randomInteractionTime(false));
-        script.log("Combat Instructor phase complete, traveling...");
-        //Should now be attacking rat with bow. Upon completion, while loop will stop and return true
-        //Travel should take over after this
         return true;
     }
 }

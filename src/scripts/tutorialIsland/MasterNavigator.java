@@ -59,16 +59,20 @@ public class MasterNavigator {
         }
         //Dough should be made
         //Bake bread
-        script.log("Baking bread");
-        Timing.waitCondition(() -> {
-            try {
-                return Utils.interactItemWithObject(script.getInventory().getItem("Bread dough"),
-                        script.getObjects().closest("Range"), "Bread", script);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }, 200, 5000);
+        while (!script.getInventory().contains("Bread")) {
+            script.log("Baking bread");
+            Timing.waitCondition(() -> {
+                try {
+                    Utils.interruptionCheck(script);
+                    return Utils.interactItemWithObject(script.getInventory().getItem("Bread dough"),
+                            script.getObjects().closest("Range"), "Bread", script);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }, 1500, 10000);
+            script.sleep(Utils.randomInteractionTime(false));
+        }
         return true;
     }
 }

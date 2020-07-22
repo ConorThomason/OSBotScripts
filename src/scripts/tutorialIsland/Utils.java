@@ -1,5 +1,7 @@
 package scripts.tutorialIsland;
 
+import org.osbot.rs07.api.map.Position;
+import org.osbot.rs07.api.model.Entity;
 import org.osbot.rs07.api.model.Item;
 import org.osbot.rs07.api.model.NPC;
 import org.osbot.rs07.api.model.RS2Object;
@@ -7,8 +9,9 @@ import org.osbot.rs07.api.ui.RS2Widget;
 import org.osbot.rs07.api.ui.Skill;
 import org.osbot.rs07.script.Script;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Utils {
     public static int totalLevel = 0;
@@ -19,6 +22,41 @@ public class Utils {
         else                                                              //Added 100 for recognition
             return (int) Math.floor((rnd.nextGaussian()*25) + 615); //+400 for conversation recognition
     }
+
+    public static List<NPC> closestToPosition(Position position, String entity, Script script){
+        List<NPC> npcs = script.getNpcs().getAll();
+        List<Position> npcPositions = npcs.stream().filter(c -> c.getName().equals(entity))
+                .map(temp -> new Position(temp.getX(), temp.getY(), temp.getZ())
+        ).sorted(Comparator.comparingInt(temp -> temp.distance(position))).collect(Collectors.toList());
+
+        return script.getNpcs().get(npcPositions.get(0).getX(), npcPositions.get(0).getY());
+    }
+    public static List<NPC> closestToPosition(Position position, String entity, Script script, int offset){
+        List<NPC> npcs = script.getNpcs().getAll();
+        List<Position> npcPositions = npcs.stream().filter(c -> c.getName().equals(entity))
+                .map(temp -> new Position(temp.getX(), temp.getY(), temp.getZ())
+                ).sorted(Comparator.comparingInt(temp -> temp.distance(position))).collect(Collectors.toList());
+
+        return script.getNpcs().get(npcPositions.get(offset).getX(), npcPositions.get(offset).getY());
+    }
+//    public static List<NPC> closestToPosition(Position position, String entity){
+//        List<NPC> npcs = getNpcs().getAll();
+//
+//        List<Position> npcPositions = npcs.stream().filter(c -> c.getName().equals(entity))
+//                .map(temp -> new Position(temp.getX(), temp.getY(), temp.getZ())
+//                ).sorted(Comparator.comparingInt(temp -> temp.distance(position))).collect(Collectors.toList());
+//        return getNpcs().get(npcPositions.get(0).getX(), npcPositions.get(0).getY());
+//    }
+//    public static List<NPC> closestToPosition(Position position, String entity, int offset){
+//        List<NPC> npcs = getNpcs().getAll();
+//
+//        List<Position> npcPositions = npcs.stream().filter(c -> c.getName().equals(entity))
+//                .map(temp -> new Position(temp.getX(), temp.getY(), temp.getZ())
+//                ).sorted(Comparator.comparingInt(temp -> temp.distance(position))).collect(Collectors.toList());
+//
+//        return getNpcs().get(npcPositions.get(offset).getX(), npcPositions.get(offset).getY());
+//    }
+
     public static void interruptionCheck(Script script) throws InterruptedException {
         int currentTotalLevel = Arrays.stream(Skill.values())
                 .mapToInt(skill -> script.getSkills().getStatic(skill))
