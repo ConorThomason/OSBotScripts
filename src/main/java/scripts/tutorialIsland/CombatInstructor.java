@@ -165,8 +165,12 @@ public class CombatInstructor {
                 script.sleep(Utils.randomInteractionTime(false));
             }
             Utils.interruptionCheck(script);
-            if (!script.getWidgets().containingText("Well done, you've made your first kill").isEmpty())
+            if (!script.getWidgets().containingText("Well done, you've made your first kill").isEmpty() ||
+            !script.getWidgets().containingText("Perhaps you should move on to learn about ranged combat")
+            .isEmpty()) {
+                Utils.interruptionCheck(script);
                 break;
+            }
             script.sleep(Utils.randomInteractionTime(true));
         }
         script.log("Giant rat should be dead");
@@ -236,9 +240,10 @@ public class CombatInstructor {
         while (!script.getWidgets().containingText(skipString2b).isEmpty()) {
             NPC rangedGiantRat = script.getNpcs().closest("Giant rat");
             script.sleep(Utils.randomInteractionTime(false));
+            Position idealPos = new Position(3108, 9512, 0);
             int offset = 0;
             do  {
-                rangedGiantRat = Utils.closestToPosition(new Position (3107, 9511, 0), "Giant rat",
+                rangedGiantRat = Utils.closestToPosition(idealPos, "Giant rat",
                         script, offset++).get(0);
             } while (rangedGiantRat.isUnderAttack() || rangedGiantRat.getHealthPercent() < 100);
             NPC finalRangedGiantRat = rangedGiantRat;

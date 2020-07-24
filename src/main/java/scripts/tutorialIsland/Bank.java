@@ -2,6 +2,8 @@ package scripts.tutorialIsland;
 
 import org.osbot.rs07.api.model.RS2Object;
 import org.osbot.rs07.script.Script;
+import scripts.tutorialIsland.Timing;
+import scripts.tutorialIsland.Utils;
 
 public class Bank {
     public boolean bank(Script script) throws InterruptedException {
@@ -18,7 +20,7 @@ public class Bank {
             }
             return false;
         }, 1000, 10000);
-        script.sleep(Utils.randomInteractionTime(false));
+        script.sleep(scripts.tutorialIsland.Utils.randomInteractionTime(false));
         script.log("Attempting to close bank");
         Timing.waitCondition(() -> script.getBank().close(), 1000, 10000);
         script.sleep(Utils.randomInteractionTime(true));
