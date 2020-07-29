@@ -3,6 +3,8 @@ package scripts.tutorialIsland;
 import org.osbot.rs07.script.Script;
 import org.osbot.rs07.script.ScriptManifest;
 
+import java.io.IOException;
+
 @ScriptManifest(author = "Hywok", name = "Tutorial Island 0.3", info = "Capable of start to finish " +
         "Tut Island completion",
         version = 0.3, logo = "")
@@ -11,6 +13,7 @@ public final class Main extends Script {
     public int onLoop() throws InterruptedException {
         this.sleep(10);
         TutorialIslandLocations state = TutorialIslandLocations.GUIDE_ROOM;
+        log("Starting character creation");
         CharacterCreation characterCreation = new CharacterCreation();
         characterCreation.characterCreation(this);
         this.sleep(100);

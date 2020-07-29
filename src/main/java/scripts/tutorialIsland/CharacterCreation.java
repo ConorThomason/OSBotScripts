@@ -2,9 +2,7 @@ package scripts.tutorialIsland;
 
 import org.osbot.rs07.api.ui.RS2Widget;
 import org.osbot.rs07.script.Script;
-
 import java.util.Random;
-
 
 public class CharacterCreation {
 

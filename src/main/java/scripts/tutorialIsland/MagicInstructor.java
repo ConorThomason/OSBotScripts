@@ -1,9 +1,13 @@
 package scripts.tutorialIsland;
 
+import org.osbot.rs07.api.map.Area;
+import org.osbot.rs07.api.map.Position;
 import org.osbot.rs07.api.model.NPC;
 import org.osbot.rs07.api.ui.Spells;
 import org.osbot.rs07.script.Script;
 import org.osbot.rs07.utility.ConditionalSleep;
+
+import java.util.List;
 
 public class MagicInstructor {
     public boolean magicInstructor(Script script) throws InterruptedException {
@@ -62,6 +66,7 @@ public class MagicInstructor {
 
     public boolean magicPhase(Script script) throws InterruptedException {
         try {
+            //X: 3138-3140 Y: 3092-3094
             Timing.waitCondition(() -> {
                 try {
                     return Utils.pendingContinuation(script);
@@ -78,14 +83,20 @@ public class MagicInstructor {
                 }
                 return false;
             }, 1000, 8000);
+            Area chickenAttack = new Area(new Position(3138, 3092, 0),
+                    new Position(3140, 3094, 0));
             while (!script.getWidgets().containingText(TUTCONSTS.instructionsInterface, "You now have some runes")
                     .isEmpty()) {
-                NPC chicken = script.getNpcs().closest("Chicken");
-                Timing.waitCondition(() -> script.getMagic().castSpellOnEntity(
-                        Spells.NormalSpells.WIND_STRIKE, chicken), 1950, 12000);
-                script.sleep(Utils.randomInteractionTime(false));
-                Utils.interruptionCheck(script);
-                script.sleep(Utils.randomInteractionTime(true));
+                List<NPC> chickens = script.getNpcs().getAll();
+                for (NPC chicken: chickens){
+                    if (chickenAttack.contains(chicken.getPosition()))
+                        Timing.waitCondition(() -> script.getMagic().castSpellOnEntity(
+                                Spells.NormalSpells.WIND_STRIKE, chicken), 1950, 12000);
+                    script.sleep(Utils.randomInteractionTime(false));
+                    Utils.interruptionCheck(script);
+                    script.sleep(Utils.randomInteractionTime(true));
+                    break;
+                }
             }
         } catch (IndexOutOfBoundsException e) {
             //nop
