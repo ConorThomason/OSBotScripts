@@ -5,9 +5,9 @@ import org.osbot.rs07.script.ScriptManifest;
 
 import java.io.IOException;
 
-@ScriptManifest(author = "Hywok", name = "Tutorial Island 0.35", info = "Capable of start to finish " +
+@ScriptManifest(author = "Hywok", name = "Tutorial Island 0.4", info = "Capable of start to finish " +
         "Tut Island completion",
-        version = 0.35, logo = "")
+        version = 0.4, logo = "")
 public final class Main extends Script {
     @Override
     public int onLoop() throws InterruptedException {
