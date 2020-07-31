@@ -8,6 +8,8 @@ import org.osbot.rs07.script.Script;
 import org.osbot.rs07.utility.ConditionalSleep;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class MagicInstructor {
     public boolean magicInstructor(Script script) throws InterruptedException {
@@ -96,16 +98,13 @@ public class MagicInstructor {
                             new Position(3140, 3094, 0));
                     while (!script.getWidgets().containingText(TUTCONSTS.instructionsInterface, "You now have some runes")
                             .isEmpty()) {
-                        List<NPC> chickens = script.getNpcs().getAll();
-                        for (NPC chicken : chickens) {
-                            if (chickenAttack.contains(chicken.getPosition()))
-                                Timing.waitCondition(() -> script.getMagic().castSpellOnEntity(
-                                        Spells.NormalSpells.WIND_STRIKE, chicken), 1950, 12000);
-                            script.sleep(Utils.randomInteractionTime(false));
-                            Utils.interruptionCheck(script);
-                            script.sleep(Utils.randomInteractionTime(true));
-                            break;
-                        }
+                        NPC chicken = script.getNpcs().closest("Chicken");
+                        Timing.waitCondition(() -> script.getMagic().castSpellOnEntity(
+                                    Spells.NormalSpells.WIND_STRIKE, chicken), 3000, 12000);
+                        script.sleep(Utils.randomInteractionTime(false));
+                        Utils.interruptionCheck(script);
+                        script.sleep(Utils.randomInteractionTime(true));
+                        break;
                     }
                 } catch (IndexOutOfBoundsException e) {
                     //nop

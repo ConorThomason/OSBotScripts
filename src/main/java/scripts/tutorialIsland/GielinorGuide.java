@@ -17,6 +17,7 @@ public class GielinorGuide {
 
     public boolean gielinorGuide(Script script) throws InterruptedException {
         switch (script.getConfigs().get(281)) {
+            case 1:
             case 2:
                 Utils.interruptionCheck(script);
                 //Initial interaction
@@ -57,8 +58,8 @@ public class GielinorGuide {
                 script.sleep(Utils.randomInteractionTime(false));
                 //*Should* be complete at this point, moving on to options section
             case 7:
+            case 10:
                 optionActions(script);
-                break;
             default:
                 break;
         }
@@ -67,6 +68,7 @@ public class GielinorGuide {
 
     public void optionActions(Script script) throws InterruptedException {
         switch (script.getConfigs().get(281)) {
+            case 3:
             case 7:
                 script.log("Attempting to click options button");
                 Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.bottomRowTabs, TUTCONSTS.optionsTab).interact(),

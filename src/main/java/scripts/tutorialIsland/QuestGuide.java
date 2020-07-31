@@ -74,8 +74,6 @@ public class QuestGuide {
                 RS2Object ladder = script.getObjects().closest("Ladder");
                 Timing.waitCondition(() -> ladder.interact("Climb-down"), 1200, 6000);
                 Timing.waitCondition(() -> script.myPosition().equals(new Position(3088, 9520, 0)), 500, 6000);
-            case 260:
-                //nop
             default:
                 break;
         }

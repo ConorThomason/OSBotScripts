@@ -2,10 +2,13 @@ package scripts.tutorialIsland;
 
 import org.osbot.rs07.api.map.Position;
 import org.osbot.rs07.api.model.NPC;
+import org.osbot.rs07.api.model.RS2Object;
 import org.osbot.rs07.api.ui.EquipmentSlot;
 import org.osbot.rs07.api.ui.Tab;
 import org.osbot.rs07.script.Script;
 import org.osbot.rs07.utility.ConditionalSleep;
+
+import java.util.Arrays;
 
 public class CombatInstructor {
 
@@ -85,12 +88,6 @@ public class CombatInstructor {
                 Timing.waitCondition(() -> script.getInventory().contains("Bronze dagger") &&
                         !script.getEquipment().contains("Bronze dagger"), 100, 7500);
                 script.sleep(Utils.randomInteractionTime(false));
-            case 420:
-            case 430:
-            case 440:
-            case 450:
-            case 460:
-            case 470:
                 Utils.interactWithNpc(script.getNpcs().closest("Combat Instructor"), "Talk-to", script);
                 Timing.waitCondition(() -> {
                     try {
@@ -101,15 +98,26 @@ public class CombatInstructor {
                     return false;
                 }, 100, 8000);
                 script.sleep(Utils.randomInteractionTime(false));
+            case 420:
+            case 430:
+            case 440:
+            case 450:
+            case 460:
+            case 470:
                 meleeSection(script);
             case 480:
+            case 490:
+            case 500:
                 script.sleep(Utils.randomInteractionTime(false));
                 rangedSection(script);
+            default:
+                break;
         }
         return true;
     }
 
     public boolean meleeSection(Script script) throws InterruptedException {
+        script.log("Beginning melee section");
         switch (script.getConfigs().get(281)) {
             case 420:
                 script.log("Attempting to equip both bronze sword and wooden shield");
@@ -131,7 +139,7 @@ public class CombatInstructor {
                 script.sleep(Utils.randomInteractionTime(false));
             case 440:
                 while (!script.getTabs().isOpen(Tab.EQUIPMENT)) {
-                    script.log("Checking eqipment tab");
+                    script.log("Checking equipment tab");
                     Timing.waitCondition(() -> script.getWidgets().get(TUTCONSTS.topRowTabs, TUTCONSTS.equipmentTab)
                             .interact(), 1000, 5000);
                     script.sleep(Utils.randomInteractionTime(false));
@@ -158,7 +166,7 @@ public class CombatInstructor {
                         Utils.interruptionCheck(script);
                         giantRat = Utils.closestToPosition(script.myPosition(), "Giant rat", script, offset++).get(0);
                     } while (giantRat.isUnderAttack() || giantRat.getHealthPercent() < 100);
-                    giantRat.interact("Attack");
+                    giantRat.interact();
                     while (giantRat.getHealthPercent() != 0) {
                         script.sleep(Utils.randomInteractionTime(false));
                     }
@@ -169,16 +177,21 @@ public class CombatInstructor {
                         Utils.interruptionCheck(script);
                         break;
                     }
+                    Utils.interruptionCheck(script);
                     script.sleep(Utils.randomInteractionTime(true));
+                    Utils.interruptionCheck(script);
                 }
                 script.log("Giant rat should be dead");
             case 470:
                 script.log("Walking to Combat Instructor");
+                doorIsClosed(script.getObjects().closest("Gate"), script);
                 Timing.waitCondition(() -> script.getObjects().closest("Gate").interact(),
                         1000, 10000);
                 script.sleep(Utils.randomInteractionTime(false));
-                Timing.waitCondition(() -> script.myPosition().equals(new Position(3111, 9518, 0)) || script.myPosition().equals(
+                boolean result = Timing.waitCondition(() -> script.myPosition().equals(new Position(3111, 9518, 0)) || script.myPosition().equals(
                         new Position(3111, 9519, 0)), 100, 12000);
+                if (!result)
+                    return this.combatInstructor(script);
                 script.sleep(Utils.randomInteractionTime(false));
                 Timing.waitCondition(() -> script.getWalking().walk(script.getNpcs().closest("Combat Instructor")
                         .getPosition()), 1000, 10000);
@@ -206,6 +219,7 @@ public class CombatInstructor {
         }
         return true;
     }
+
     public boolean rangedSection(Script script) throws InterruptedException {
         switch (script.getConfigs().get(281)) {
             case 480:
@@ -237,35 +251,43 @@ public class CombatInstructor {
 //        script.sleep(Utils.randomInteractionTime(false));
             case 490:
                 //Now you have a bow and some arrows
-                while (script.getConfigs().get(281) == 490) {
-                    NPC rangedGiantRat = script.getNpcs().closest("Giant rat");
-                    script.sleep(Utils.randomInteractionTime(false));
-                    Position idealPos = new Position(3108, 9512, 0);
-                    int offset = 0;
-                    do {
-                        rangedGiantRat = Utils.closestToPosition(idealPos, "Giant rat",
-                                script, offset++).get(0);
-                    } while (rangedGiantRat.isUnderAttack() || rangedGiantRat.getHealthPercent() < 100);
-                    NPC finalRangedGiantRat = rangedGiantRat;
-                    script.log("Attempting to attack Giant rat (Ranged)");
-                    Timing.waitCondition(() -> finalRangedGiantRat.interact("Attack"), 1000, 10000);
-                    while (rangedGiantRat.getHealthPercent() != 0) {
-                        Utils.interruptionCheck(script);
-                        script.sleep(Utils.randomInteractionTime(false));
-                    }
-                    script.log("Giant rat should be dead");
+                NPC rangedGiantRat = script.getNpcs().closest("Giant rat");
+                script.sleep(Utils.randomInteractionTime(false));
+                Position idealPos = new Position(3108, 9512, 0);
+                int offset = 0;
+                do {
+                    rangedGiantRat = Utils.closestToPosition(idealPos, "Giant rat",
+                            script, offset++).get(0);
+                } while (rangedGiantRat.isUnderAttack() || rangedGiantRat.getHealthPercent() < 100);
+                NPC finalRangedGiantRat = rangedGiantRat;
+                script.log("Attempting to attack Giant rat (Ranged)");
+                Timing.waitCondition(() -> finalRangedGiantRat.interact("Attack"), 1000, 10000);
+                while (rangedGiantRat.getHealthPercent() != 0) {
                     Utils.interruptionCheck(script);
                     script.sleep(Utils.randomInteractionTime(false));
-                    script.log("Combat Instructor phase complete, traveling...");
-                    //Should now be attacking rat with bow. Upon completion, while loop will stop and return true
-                    //Travel should take over after this
-                    script.sleep(Utils.randomInteractionTime(false));
                 }
+                script.log("Giant rat should be dead");
+                Utils.interruptionCheck(script);
+                script.sleep(Utils.randomInteractionTime(false));
+                script.log("Combat Instructor phase complete, traveling...");
+                //Should now be attacking rat with bow. Upon completion, while loop will stop and return true
+                //Travel should take over after this
+                script.sleep(Utils.randomInteractionTime(false));
             case 500:
                 //nop
             default:
                 break;
         }
         return true;
+    }
+
+    public boolean doorIsClosed(RS2Object door, Script script) throws InterruptedException {
+        Utils.interruptionCheck(script);
+        try {
+            return Arrays.asList(door.getDefinition().getActions()).contains("Open");
+        } catch (NullPointerException e) {
+            script.sleep(Utils.randomInteractionTime(false));
+            return doorIsClosed(door, script);
+        }
     }
 }

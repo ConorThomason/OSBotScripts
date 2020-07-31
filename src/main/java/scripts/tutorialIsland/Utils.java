@@ -62,7 +62,6 @@ public class Utils {
                 .mapToInt(skill -> script.getSkills().getStatic(skill))
                 .sum();
         if (totalLevel == 0){
-            script.log("Setting initial total level");
             totalLevel = currentTotalLevel;
         }
         if (currentTotalLevel > totalLevel){

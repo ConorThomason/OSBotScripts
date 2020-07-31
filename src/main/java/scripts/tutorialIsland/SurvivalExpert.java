@@ -14,12 +14,10 @@ public class SurvivalExpert {
     public boolean survivalExpert(Script script) throws InterruptedException {
         NPC fishingSpots = script.getNpcs().closest("Fishing spot");
         switch (script.getConfigs().get(281)) {
+            case 20:
             case 30:
                 Utils.interruptionCheck(script);
-                RS2Widget instructionsInterface = script.getWidgets().get(TUTCONSTS.instructionsInterface,
-                        TUTCONSTS.instructionsChild, TUTCONSTS.instructionsComponent);
                 //First chat
-                script.log("Started Survival Expert phase");
                 script.log("Attempting to talk to Survival Expert");
                 Utils.interactWithNpc(script.getNpcs().closest("Survival Expert"), "Talk-to"
                         , script);

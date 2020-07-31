@@ -2,6 +2,7 @@ package scripts.tutorialIsland;
 
 import org.osbot.rs07.api.map.Area;
 import org.osbot.rs07.api.map.Position;
+import org.osbot.rs07.script.Script;
 
 public enum TutorialIslandLocations {
     GUIDE_ROOM(new Area(new Position(3091, 3110, 0), new Position(3097, 3105, 0))),
@@ -25,7 +26,7 @@ public enum TutorialIslandLocations {
         return this.location;
     }
 
-    public static TutorialIslandLocations getLocationName(Position playerPos) {
+    public static TutorialIslandLocations getLocationName(Position playerPos, Script script) {
         if (GUIDE_ROOM.getLocation().contains(playerPos)) {
             return GUIDE_ROOM;
         } else if (SURVIVAL_EXPERT.getLocation().contains(playerPos)) {
@@ -36,7 +37,8 @@ public enum TutorialIslandLocations {
             return QUEST_GUIDE;
         } else if (MINING_INSTRUCTOR.getLocation().contains(playerPos)) {
             return MINING_INSTRUCTOR;
-        } else if (COMBAT_INSTRUCTOR.getLocation().contains(playerPos)) {
+        } else if ((script.getConfigs().get(281) >= 360 &&
+                script.getConfigs().get(281) <= 510) || COMBAT_INSTRUCTOR.getLocation().contains(playerPos)) {
             return COMBAT_INSTRUCTOR;
         } else if (ACCOUNT_GUIDE.getLocation().contains(playerPos)) {
             return ACCOUNT_GUIDE;

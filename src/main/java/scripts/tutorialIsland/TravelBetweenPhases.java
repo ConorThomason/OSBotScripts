@@ -18,51 +18,44 @@ public class TravelBetweenPhases {
         script.sleep(Utils.randomInteractionTime(false));
         script.log("Attempting to walk to door");
         script.getWalking().webWalk(new Position(3103, 3096, 0));
-        Timing.waitCondition(() -> script.myPosition().equals(new Position(3103, 3096, 0)),
-                500, 10000);
+        Timing.waitCondition(() -> TutorialIslandLocations.getLocationName(script.myPosition(), script) ==
+                TutorialIslandLocations.SURVIVAL_EXPERT, 500, 10000);
         script.log("Walked to Survival Expert");
         return true;
     }
 
     public boolean travelFromSurvivalExpert(Script script) throws InterruptedException {
-        switch (script.getConfigs().get(281)) {
-            case 130:
-                Utils.interruptionCheck(script);
-                Area area = new Area(new Position(3089, 3093, 0), new Position(3088, 3090, 0));
-                script.log("Traveling from survival expert");
-                while (!area.contains(script.myPosition())) {
-                    RS2Object gate = script.getObjects().closest("Gate");
-                    boolean isClosed = doorIsClosed(gate, script);
-                    script.getWalking().walk(new Position(3090, 3091, 0));
-                    Timing.waitCondition(() -> {
-                        try {
-                            return doorIsClosed(gate, script);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        return false;
-                    }, 300, 6000);
-                    script.sleep(Utils.randomInteractionTime(false));
-                    gate.interact("Open");
-                    script.sleep(800);
-
-                    while (script.myPlayer().isMoving()) {
-                        Timing.waitCondition(() -> script.myPlayer().isMoving(), 250, 4000);
-                    }
+        Utils.interruptionCheck(script);
+        Area area = new Area(new Position(3089, 3093, 0), new Position(3088, 3090, 0));
+        script.log("Traveling from survival expert");
+        while (!area.contains(script.myPosition())) {
+            RS2Object gate = script.getObjects().closest("Gate");
+            boolean isClosed = doorIsClosed(gate, script);
+            script.getWalking().walk(new Position(3090, 3091, 0));
+            Timing.waitCondition(() -> {
+                try {
+                    return doorIsClosed(gate, script);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                script.sleep(Utils.randomInteractionTime(false));
-                script.log("Walking away from gate");
-                script.getWalking().walk(new Position(3079, 3084, 0));
-                Timing.waitCondition(() -> script.myPlayer().isMoving(), 250, 8000);
-                Timing.waitCondition(() -> script.getObjects().closest("Door").interact(), 100, 1500);
-                script.sleep(Utils.randomInteractionTime(false));
-                Timing.waitCondition(() -> TutorialIslandLocations.MASTER_NAVIGATOR.
-                        getLocation().contains(script.myPosition()), 200, 10000);
-            case 140:
-                //nop
-            default:
-                break;
+                return false;
+            }, 300, 6000);
+            script.sleep(Utils.randomInteractionTime(false));
+            gate.interact("Open");
+            script.sleep(800);
+
+            while (script.myPlayer().isMoving()) {
+                Timing.waitCondition(() -> script.myPlayer().isMoving(), 250, 4000);
+            }
         }
+        script.sleep(Utils.randomInteractionTime(false));
+        script.log("Walking away from gate");
+        script.getWalking().walk(new Position(3079, 3084, 0));
+        Timing.waitCondition(() -> script.myPlayer().isMoving(), 250, 8000);
+        Timing.waitCondition(() -> script.getObjects().closest("Door").interact(), 100, 1500);
+        script.sleep(Utils.randomInteractionTime(false));
+        Timing.waitCondition(() -> TutorialIslandLocations.MASTER_NAVIGATOR.
+                getLocation().contains(script.myPosition()), 200, 10000);
         return true;
     }
 

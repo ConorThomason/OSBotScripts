@@ -6,11 +6,15 @@ import java.util.Random;
 
 public class CharacterCreation {
 
-    public void characterCreation(Script i) {
+    private boolean characterRepeatFlag = false;
+
+    public boolean characterCreation(Script i) throws InterruptedException {
         nameChoice(i);
         appearanceChoice(i);
+        i.log("Character creation complete");
+        return true;
     }
-    public void nameChoice(Script script) {
+    public void nameChoice(Script script) throws InterruptedException {
         //Name choose
         try {
             RS2Widget displayName = script.getWidgets().get(
@@ -47,6 +51,7 @@ public class CharacterCreation {
                             100, 5000);
                 }
             }
+            Timing.waitCondition(() -> setNameButton.hover(), 1000, 10000);
             Timing.waitCondition(() -> setNameButton.interact(), 1000, 10000);
             script.sleep(Utils.randomInteractionTime(false));
             if (characterCreationNotice.getMessage().contains("error")){
@@ -62,11 +67,13 @@ public class CharacterCreation {
             e.printStackTrace();
             script.log("Skipping name selection");
         }
+        Timing.waitCondition(() -> !script.getWidgets().containingText("Head").isEmpty(),
+                100, 10000);
     }
 
     public void appearanceChoice(Script script) {
         try {
-            script.log("Successfully confirmed name, initiating random appearance");
+            script.log("Attempting to initiate random appearance");
             //Random appearance
             script.sleep(Utils.randomInteractionTime(false));
 
@@ -102,6 +109,7 @@ public class CharacterCreation {
             script.getWidgets().get(269, 100).interact("Accept");
         } catch (NullPointerException | InterruptedException e) {
             script.log("Character already created, skipping to appropriate phase");
+            this.characterRepeatFlag = true;
         }
 
     }
@@ -131,7 +139,11 @@ public class CharacterCreation {
                 set_shifts = script.random(0, max_shifts - set_shifts);
             }
         } catch (NullPointerException e){
-
+            if (characterRepeatFlag){
+                script.log("Character already created, skipping to appropriate phase");
+            }
+            else
+                this.nameChoice(script);
         }
     }//used in character creation
 }
